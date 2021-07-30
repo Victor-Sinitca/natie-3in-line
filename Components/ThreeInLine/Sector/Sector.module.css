@@ -1,0 +1,53 @@
+.img {
+    position: absolute;
+    left:0px;
+    top:0px;
+    border-radius: 5px;
+    height: 95%;
+    width: 95%;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;
+    pointer-events: none;
+
+}
+.imgBonus {
+    position: absolute;
+    left:0px;
+    top:0px;
+    border-radius: 5px;
+    height: 95%;
+    width: 95%;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;
+    pointer-events: none;
+
+}
+.isBum {
+    border-radius: 5px;
+    background-color: #10ac05;
+    height: 95%;
+    width: 95%;
+}
+.score{
+    position: absolute;
+    left:0px;
+    top:0px;
+    bottom: 50px;
+}
+
+.shieldDiv{
+    position: absolute;
+    left:0px;
+    top:0px;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+
+}
+.fon{
+    z-index: 0;
+    position: absolute;
+    left:0px;
+    top:0px;
+    height: 100%;
+    width: 100%;
+    background-color: lightgrey;
+}
