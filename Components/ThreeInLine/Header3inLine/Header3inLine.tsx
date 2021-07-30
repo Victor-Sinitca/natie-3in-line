@@ -19,7 +19,7 @@ type PropsType = {
     setEndMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const Header3inLine: FC<PropsType> = React.memo(({map, setEndMove, gemsCount}) => {
+export const Header3inLine: FC<PropsType> =({map, setEndMove, gemsCount}) => {
     const dispatch = useDispatch()
     const score = useSelector(getScore)
     const addScore = useSelector(getAddScore)
@@ -105,42 +105,50 @@ export const Header3inLine: FC<PropsType> = React.memo(({map, setEndMove, gemsCo
 
     return (
         <View style={{flexDirection: "column"}}>
-            <View style={{flexDirection: "row"}}>
-                <FieldChangeButtons label={`вертикаль: ${map.length} `} value={"x"} addLine={addLine}
+            <View style={{flexDirection: "row", width: "100%", alignContent: "space-around", padding: 10}}>
+                <FieldChangeButtons label={`верт: ${map.length} `} value={"x"} addLine={addLine}
                                     takeAwayLine={takeAwayLine}/>
-                <FieldChangeButtons label={`горизонталь: ${map[0].length}`} value={"y"} addLine={addLine}
+                <FieldChangeButtons label={`гор: ${map[0].length}`} value={"y"} addLine={addLine}
                                     takeAwayLine={takeAwayLine}/>
-                <View>
-                    <Text>масштаб:</Text>
+                <View style={{flex: 1}} >
+                    <Text>масш:</Text>
                     <View style={{flexDirection: "row"}}>
-                        <Button title="+" onPress={() => {
-                            changeSizeSector(true)
-                        }}/>
-                        <Button title="-" onPress={() => {
-                            changeSizeSector(false)
-                        }}/>
+                        <View style={{flex: 1, padding: 5}}>
+                            <Button title="+" onPress={() => {
+                                changeSizeSector(true)
+                            }}/>
+                        </View>
+                        <View style={{flex: 1, padding: 5}}>
+                            <Button title="-" onPress={() => {
+                                changeSizeSector(false)
+                            }}/>
+                        </View>
                     </View>
                 </View>
-                <View>
-                    <Text>количество камней: {gemsCount}</Text>
+                <View style={{flex: 1}}>
+                    <Text>камней: {gemsCount}</Text>
                     <View style={{flexDirection: "row"}}>
-                        <Button title="+" disabled={gemsCount > 7}
-                                onPress={() => {
-                                    changeCountGems(true)
-                                }}/>
-                        <Button title="-" disabled={gemsCount < 5}
-                                onPress={() => {
-                                    changeCountGems(false)
-                                }}/>
+                        <View style={{flex: 1, padding: 5}}>
+                            <Button title="+" disabled={gemsCount > 7}
+                                    onPress={() => {
+                                        changeCountGems(true)
+                                    }}/>
+                        </View>
+                        <View style={{flex: 1, padding: 5}}>
+                            <Button title="-" disabled={gemsCount < 5}
+                                    onPress={() => {
+                                        changeCountGems(false)
+                                    }}/>
+                        </View>
                     </View>
                 </View>
             </View>
-            <View style={{flexDirection: "row"}}>
-                <View>
+            <View style={{flexDirection: "row", padding: 10, alignContent: "stretch"}}>
+                <View style={{flex: 1}}>
                     <View><Text>очки:{score}</Text></View>
                     <View><Text>+{addScore}</Text></View>
                 </View>
-                <View>
+                <View style={{flex: 1}}>
                     <View>
                         {isDevMode ? <Text>РАЗРАБОТЧИК</Text> : <Text>ИГРА</Text>}
                     </View>
@@ -148,18 +156,18 @@ export const Header3inLine: FC<PropsType> = React.memo(({map, setEndMove, gemsCo
                         {isEndTurn ? <Text>ждите</Text> : <Text>ваш ход</Text>}
                     </View>
                 </View>
-                <View>
+                <View style={{flex: 1}}>
                     <View>
                         <Button title="режим" onPress={() => dispatch(threeInLineAction.setIsDevMode(!isDevMode))}/>
                     </View>
                     {isDevMode && <>
-                        <View style={{flexDirection: "row"}}>
-                            <Button title="check" onPress={onClickCheckIsBum}/>
+                        <View  style={{flexDirection: "row"}}>
+                            <Button  title="check" onPress={onClickCheckIsBum}/>
                             <Button title="bonus" onPress={onClickFindBonus}/>
                             <Button title="bum" onPress={onClickBum}/>
                         </View>
                         <View style={{flexDirection: "row"}}>
-                            <Button title="new map" onPress={newMap}/>
+                            <Button color={"red"} title="new map" onPress={newMap}/>
                             <Button title="set map" onPress={setMapOnClick}/>
                         </View>
                     </>
@@ -168,7 +176,7 @@ export const Header3inLine: FC<PropsType> = React.memo(({map, setEndMove, gemsCo
             </View>
         </View>
     )
-})
+}
 
 type FieldChangeButtonsType = {
     label: string,
@@ -176,18 +184,22 @@ type FieldChangeButtonsType = {
     takeAwayLine: (value: "x" | "y") => void,
     value: "x" | "y"
 }
-const FieldChangeButtons: FC<FieldChangeButtonsType> = React.memo(({label, addLine, takeAwayLine, value}) => {
+const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwayLine, value}) => {
     return (
-        <View>
+        <View style={{flex: 1}}>
             <Text> {label} </Text>
             <View style={{flexDirection: "row"}}>
-                <Button title="+" onPress={() => {
-                    addLine(value)
-                }}/>
-                <Button title="-" onPress={() => {
-                    takeAwayLine(value)
-                }}/>
+                <View style={{flex: 1, padding: 5}}>
+                    <Button title="+" onPress={() => {
+                        addLine(value)
+                    }}/>
+                </View>
+                <View style={{flex: 1, padding: 5}}>
+                    <Button title="-" onPress={() => {
+                        takeAwayLine(value)
+                    }}/>
+                </View>
             </View>
         </View>
     )
-})
+}

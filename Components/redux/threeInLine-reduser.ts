@@ -44,7 +44,7 @@ export type deskStateType = {
 
 let initialState = {
     map: null as null | MapsGameType,
-    deskState: {x: 10 as number, y: 10 as number, length: 50 as number},
+    deskState: {x: 10 as number, y: 7 as number, length: 50 as number},
     gemsCount: 5 as number,
     prevMap: null as null | MapsGameType,
     score: 0 as number,
@@ -244,6 +244,9 @@ export const boomEffectThink = (map: MapsGameType, gemsCount: number, score: num
 export const checkMapThink = (map: MapsGameType): AnyBaseActionType => {
     return async (dispatch) => {
         /* console.log("checkMapThink")*/
+
+
+
         dispatch(threeInLineAction.setMap(findBonusBumFunc(map)))
         dispatch(threeInLineAction.setIsBoom(false))
     }

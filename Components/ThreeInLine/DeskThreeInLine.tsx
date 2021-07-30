@@ -1,17 +1,12 @@
+import * as React from "react";
 import {FC} from "react";
 import {Sector, SectorGameType} from "./Sector/Sector";
-import {threeInLineAction} from "../redux/threeInLine-reduser";
-import {useDispatch} from "react-redux";
-import * as React from "react";
-import {View,} from "react-native";
+import {Text, View,} from "react-native";
+import {deskStateType} from "./ThreeInLine";
 
 export type MapsGameType = Array<Array<SectorGameType>>
 type PropsType = {
-    deskState: {
-        x: number,
-        y: number,
-        length: number
-    }
+    deskState: deskStateType
     isEndTurn: boolean
     userMap: MapsGameType
     returnMouseDown: (sector: SectorGameType) => void
@@ -21,49 +16,52 @@ type PropsType = {
 
 
 }
-const DeskThreeInLine: FC<PropsType> = React.memo(({
-                                                       userMap, deskState, returnMouseDown, selectSector,
-                                                       returnMouseUp, returnMouseOver, isEndTurn,
-                                                   }) => {
-    const dispatch = useDispatch()
-    const repeat = (count: number) => {
-        let string = ''
-        for (let i = 0; i < count; i++) {
-            string = string + `${deskState.length + ""}px `
-        }
-        return string
-    }
-    const deleteAnimation = (y: number, x: number) => {
-        dispatch(threeInLineAction.deleteAnimationInSector(y, x))
-    }
-    const decreaseAnimationCount = () => {
-        dispatch(threeInLineAction.decreaseAnimationCount())
+const DeskThreeInLine: FC<PropsType> = ({
+                                            userMap, deskState, returnMouseDown, selectSector,
+                                            returnMouseUp, returnMouseOver, isEndTurn,
+                                        }) => {
+    const shadowStyle = {
+        shadowColor: "blue",
+        shadowOffset: {
+            width: 0,
+            height: 0
+        },
+        shadowOpacity: 10,
+        shadowRadius: 10,
+        elevation:10,
     }
 
-
-    return (
-        // @ts-ignore
-        <View style={{
-            display: "grid",
-            overflow: "hidden",
-            gridTemplateColumns: repeat(deskState.y),
-            gridTemplateRows: repeat(deskState.x),
-            border: "grey solid 2px",
-            boxShadow: "0px 0px 10px 2px #2244AA"
-        }}>
-            {userMap.map(a => a.map(b =>
-                /*<View/>*/
+    const returnMapRow = (a: Array<SectorGameType>) => {
+        return a.map((b) =>
+            <View key={b.sectorState.x} style={{height: deskState.length, width: deskState.length}}>
                 <Sector returnMouseDown={returnMouseDown}
                         returnMouseUp={returnMouseUp}
                         returnMouseOver={returnMouseOver}
                         key={b.sectorState.x * 10 + b.sectorState.y}
                         sector={b}
-                    /*deleteAnimation={deleteAnimation}
-                    decreaseAnimationCount={decreaseAnimationCount}*/
+                        deskState={deskState}
                 />
-            ))
-            }
+            </View>
+        )
+    }
+
+    const map = userMap.map((a: Array<SectorGameType>) => {
+            return <View key={a[0].sectorState.y} style={{flexDirection: "row", height: 50}}>
+                {returnMapRow(a)}
+            </View>
+        }
+    )
+    return (
+        <View style={{
+            height: "auto",
+            width: "auto",
+            flexDirection: "column",
+            ...shadowStyle,
+        }}>
+            {map}
         </View>
     )
-})
+}
+
+
 export default DeskThreeInLine

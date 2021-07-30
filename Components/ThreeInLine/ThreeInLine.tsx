@@ -25,7 +25,7 @@ import {
 } from "../redux/threeInLine-selectors";
 import DeskThreeInLine from "./DeskThreeInLine";
 import * as React from "react";
-import { View,Text} from "react-native";
+import {View, Text} from "react-native";
 import {Header3inLine} from "./Header3inLine/Header3inLine";
 
 
@@ -35,12 +35,12 @@ export type deskStateType = {
 type PropsType = {
     map: MapsGameType
     gemsCount: number
-    animationCount:number
+    animationCount: number
+    deskState: deskStateType
 }
-export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) => {
+export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState}) => {
     const dispatch = useDispatch()
     const [endMove, setEndMove] = useState<boolean>(false)
-    const deskState = useSelector(getDeskState)
     const prevMap = useSelector(getPrevMap)
     const score = useSelector(getScore)
     const isDevMode = useSelector(getIsDevMode)
@@ -49,20 +49,19 @@ export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) =>
     const isBoom = useSelector(getIsBoom)
 
 
-
     const onMouseDown = (sector: SectorGameType) => {
         if (!isEndTurn) {
             if (selectSector) {
                 // есть выделенный сектор
                 if (sector.sectorState.isSelected) {
-                   /* console.log("onMouseDown - old sector selected ")*/
+                    /* console.log("onMouseDown - old sector selected ")*/
                     // если сектор был выделен  установка флага на снятие выделения
                     dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, sector)))
                 } else if (isNearbyWithSector(selectSector, sector)) {
-                   /* console.log("onMouseDown -isNearbyWithSector")*/
+                    /* console.log("onMouseDown -isNearbyWithSector")*/
                     dispatch(checkOnLineInSelectSectorsThink(map, selectSector, sector, false))
                 } else {
-                   /* console.log("onMouseDown - new sector selected")*/
+                    /* console.log("onMouseDown - new sector selected")*/
                     // выбран сектор не рядом выделение сектора
                     // удаление старого выдления, установка нового выделения
                     // запись карты
@@ -95,10 +94,11 @@ export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) =>
         }
     }
     const onMouseOver = (sector: SectorGameType) => {
-        if (selectSector && !isEndTurn && sectorsNotEqual(sector, selectSector)) {
-            if (isNearbyWithSector(selectSector, sector)) {
-               /* console.log("onMouseOver -isNearbyWithSector")*/
-                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, sector, false))
+        if (selectSector && !isEndTurn) {
+            if (map[sector.sectorState.y]?.[sector.sectorState.x] && isNearbyWithSector(selectSector, sector)) {
+                /* console.log("onMouseOver -isNearbyWithSector")*/
+
+                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[sector.sectorState.y][sector.sectorState.x], false))
             } else {
                 /*console.log("onMouseOver -unselectNewSectorThink")*/
                 dispatch(unselectNewSectorThink(map, selectSector))
@@ -111,17 +111,11 @@ export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) =>
         if (!isDevMode) {
             /* console.log("boomFunc")*/
             if (isEndTurn && !isBoom && !animationCount) {
-                /*  dispatch(boomEffectThink(map,gemsCount,score))*/
-                setTimeout(() => {
-                    /* console.log("boomFunc ==> is bum")*/
-                    dispatch(boomEffectThink(map,gemsCount,score))
-                   /* let boomFuncState = boomFunc1(map, gemsCount)
-                    dispatch(threeInLineAction.setMap(boomFuncState.map))
-                    dispatch(threeInLineAction.setAnimationCount(boomFuncState.animationsCount))
-                    dispatch(threeInLineAction.setAddScore(boomFuncState.score))
-                    dispatch(threeInLineAction.setScore(score + boomFuncState.score))
-                    dispatch(threeInLineAction.setIsBoom(true))*/
-                }, 200);
+                dispatch(boomEffectThink(map, gemsCount, score))
+                /* setTimeout(() => {
+                     /!* console.log("boomFunc ==> is bum")*!/
+                     dispatch(boomEffectThink(map,gemsCount,score))
+                 }, 200);*/
             } else {
                 /*console.log("boomFunc ==> new turn")*/
                 dispatch(threeInLineAction.setIsBoom(false))
@@ -133,9 +127,9 @@ export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) =>
 // нахождение секторов для уничтожения
     useEffect(() => {
         /* console.log("checkMap")*/
-        if (isBoom && !isDevMode ) {
+        if (isBoom && !isDevMode) {
             const newMap = checkMap(map)
-            if (newMap.isBum){
+            if (newMap.isBum) {
                 dispatch(checkMapThink(newMap.map))
             } else {
                 dispatch(endTurnThink())
@@ -144,17 +138,17 @@ export const ThreeInLine: FC<PropsType> =   ({map, gemsCount,animationCount}) =>
     }, [/*dispatch,*/ isBoom,
         isDevMode, /*map*/])
 
-    return  <View >
-            <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>
-            <DeskThreeInLine userMap={map} selectSector={selectSector}
+    return <View style={{width: "100%", height: "100%"}}>
+        <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>
+        <DeskThreeInLine userMap={map} selectSector={selectSector}
                              returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
                              returnMouseUp={onMouseUp}
                              returnMouseOver={onMouseOver}
                              isEndTurn={isEndTurn}
                              deskState={deskState}
             />
-            {endMove && <View> <Text>  нет ходов</Text> </View>}
-        </View>
+        {endMove && <View> <Text> нет ходов</Text> </View>}
+    </View>
 
 
 }

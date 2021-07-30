@@ -83,7 +83,7 @@ export const findBonusBumFunc = (Map: MapsGameType,) => {
                 }
             }
         }
-        if (counter) console.log("set count")
+        /*if (counter) console.log("set count")*/
         if (bonusCount !== counter) {
             bonusCount = counter
             counter = 0
