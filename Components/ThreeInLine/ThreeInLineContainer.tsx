@@ -11,7 +11,7 @@ import {
 import {deleteAnimationsThink, threeInLineAction} from "../redux/threeInLine-reduser";
 import {ThreeInLine} from "./ThreeInLine";
 import * as React from "react";
-import {View,Text} from "react-native";
+import {View, Text, StyleSheet} from "react-native";
 
 export const ThreeInLineContainer = () => {
     const dispatch = useDispatch()
@@ -36,9 +36,14 @@ export const ThreeInLineContainer = () => {
     }, [gemsCount, deskState, dispatch])
 
 
-    return <View style={{width:"100%", height:"100%" }}>
+    return <View style={styles.main}>
         {map && <ThreeInLine map={map} gemsCount={gemsCount} animationCount={animationCount} deskState={deskState}/>}
     </View>
 
 }
-
+const styles = StyleSheet.create({
+    main: {
+        width:"100%",
+        height:"100%"
+    }
+});

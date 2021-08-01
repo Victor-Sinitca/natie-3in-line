@@ -25,7 +25,7 @@ import {
 } from "../redux/threeInLine-selectors";
 import DeskThreeInLine from "./DeskThreeInLine";
 import * as React from "react";
-import {View, Text} from "react-native";
+import {View, Text, StyleSheet} from "react-native";
 import {Header3inLine} from "./Header3inLine/Header3inLine";
 
 
@@ -138,7 +138,7 @@ export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, desk
     }, [/*dispatch,*/ isBoom,
         isDevMode, /*map*/])
 
-    return <View style={{width: "100%", height: "100%"}}>
+    return <View style={styles.main}>
         <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>
         <DeskThreeInLine userMap={map} selectSector={selectSector}
                              returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
@@ -152,3 +152,9 @@ export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, desk
 
 
 }
+const styles = StyleSheet.create({
+    main: {
+        width:"100%",
+        height:"100%"
+    }
+});

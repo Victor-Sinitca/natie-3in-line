@@ -10,7 +10,7 @@ import {threeInLineAction} from "../../redux/threeInLine-reduser";
 import {MapsGameType} from "../DeskThreeInLine";
 import {boomFunc1} from "../gameLogic/boomFunc1";
 import * as React from "react";
-import {View, Text, Button} from "react-native";
+import {View, Text, Button, StyleSheet} from "react-native";
 
 
 type PropsType = {
@@ -104,7 +104,7 @@ export const Header3inLine: FC<PropsType> =({map, setEndMove, gemsCount}) => {
     }
 
     return (
-        <View style={{flexDirection: "column"}}>
+        <View style={[styles.main,{flexDirection: "column"}]}>
             <View style={{flexDirection: "row", width: "100%", alignContent: "space-around", padding: 10}}>
                 <FieldChangeButtons label={`верт: ${map.length} `} value={"x"} addLine={addLine}
                                     takeAwayLine={takeAwayLine}/>
@@ -203,3 +203,7 @@ const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwa
         </View>
     )
 }
+const styles = StyleSheet.create({
+    main: {
+    }
+});

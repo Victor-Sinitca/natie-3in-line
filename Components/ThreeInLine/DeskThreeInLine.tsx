@@ -1,7 +1,7 @@
 import * as React from "react";
 import {FC} from "react";
 import {Sector, SectorGameType} from "./Sector/Sector";
-import {Text, View,} from "react-native";
+import {Dimensions, StyleSheet, Text, View,} from "react-native";
 import {deskStateType} from "./ThreeInLine";
 
 export type MapsGameType = Array<Array<SectorGameType>>
@@ -20,16 +20,6 @@ const DeskThreeInLine: FC<PropsType> = ({
                                             userMap, deskState, returnMouseDown, selectSector,
                                             returnMouseUp, returnMouseOver, isEndTurn,
                                         }) => {
-    const shadowStyle = {
-        shadowColor: "blue",
-        shadowOffset: {
-            width: 0,
-            height: 0
-        },
-        shadowOpacity: 10,
-        shadowRadius: 10,
-        elevation:10,
-    }
 
     const returnMapRow = (a: Array<SectorGameType>) => {
         return a.map((b) =>
@@ -46,22 +36,34 @@ const DeskThreeInLine: FC<PropsType> = ({
     }
 
     const map = userMap.map((a: Array<SectorGameType>) => {
-            return <View key={a[0].sectorState.y} style={{flexDirection: "row", height: 50}}>
+            return <View key={a[0].sectorState.y} style={{flexDirection: "row", height: deskState.length,}}>
                 {returnMapRow(a)}
             </View>
         }
     )
     return (
-        <View style={{
-            height: "auto",
-            width: "auto",
-            flexDirection: "column",
-            ...shadowStyle,
-        }}>
+        <View style={styles.main}>
             {map}
         </View>
     )
 }
+const styles = StyleSheet.create({
+    main: {
+        flex:1,
+        /*height: "auto",
+        width: "auto",*/
+        flexDirection: "column",
+        /*shadowColor: "blue",
+        shadowOffset: {
+            width: 0,
+            height: 0
+        },
+        shadowOpacity: 10,
+        shadowRadius: 10,
+        elevation:10,
+        backgroundColor:"#0000"*/
+    }
+});
 
 
 export default DeskThreeInLine
