@@ -135,6 +135,7 @@ export const Sector: FC<PropsType> = ({
     return <View style={{height: "100%", backgroundColor: index ? "#11221122" : ""}}
                  onStartShouldSetResponder={() => true}
                  onMoveShouldSetResponder={() => true}
+                 onResponderTerminationRequest={() => true}
                  onResponderStart={handlerMouseDown}
                  onResponderRelease={handlerMouseUp}
                  onResponderMove={handlerMouseOver}
@@ -260,6 +261,12 @@ const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
     )
 }
 const s = StyleSheet.create({
+    main: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 5,
+    },
+    fadingContainer: {},
     img: {
         position: "absolute",
         start:0,
