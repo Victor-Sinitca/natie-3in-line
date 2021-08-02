@@ -116,10 +116,10 @@ export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, desk
                      /!* console.log("boomFunc ==> is bum")*!/
                      dispatch(boomEffectThink(map,gemsCount,score))
                  }, 200);*/
-            } else {
-                /*console.log("boomFunc ==> new turn")*/
+            } /*else {
+                /!*console.log("boomFunc ==> new turn")*!/
                 dispatch(threeInLineAction.setIsBoom(false))
-            }
+            }*/
         }
     }, [/*dispatch,*/ isEndTurn, isBoom, animationCount,
         /*gemsCount, isDevMode*/])

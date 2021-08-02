@@ -19,7 +19,7 @@ type PropsType = {
     setEndMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const Header3inLine: FC<PropsType> =({map, setEndMove, gemsCount}) => {
+export const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
     const dispatch = useDispatch()
     const score = useSelector(getScore)
     const addScore = useSelector(getAddScore)
@@ -104,13 +104,13 @@ export const Header3inLine: FC<PropsType> =({map, setEndMove, gemsCount}) => {
     }
 
     return (
-        <View style={[styles.main,{flexDirection: "column"}]}>
+        <View style={[styles.main, {flexDirection: "column"}]}>
             <View style={{flexDirection: "row", width: "100%", alignContent: "space-around", padding: 10}}>
                 <FieldChangeButtons label={`верт: ${map.length} `} value={"x"} addLine={addLine}
                                     takeAwayLine={takeAwayLine}/>
                 <FieldChangeButtons label={`гор: ${map[0].length}`} value={"y"} addLine={addLine}
                                     takeAwayLine={takeAwayLine}/>
-                <View style={{flex: 1}} >
+                <View style={{flex: 1}}>
                     <Text>масш:</Text>
                     <View style={{flexDirection: "row"}}>
                         <View style={{flex: 1, padding: 5}}>
@@ -160,20 +160,27 @@ export const Header3inLine: FC<PropsType> =({map, setEndMove, gemsCount}) => {
                     <View>
                         <Button title="режим" onPress={() => dispatch(threeInLineAction.setIsDevMode(!isDevMode))}/>
                     </View>
-                    {isDevMode && <>
-                        <View  style={{flexDirection: "row"}}>
-                            <Button  title="check" onPress={onClickCheckIsBum}/>
-                            <Button title="bonus" onPress={onClickFindBonus}/>
-                            <Button title="bum" onPress={onClickBum}/>
-                        </View>
-                        <View style={{flexDirection: "row"}}>
-                            <Button color={"red"} title="new map" onPress={newMap}/>
-                            <Button title="set map" onPress={setMapOnClick}/>
-                        </View>
-                    </>
-                    }
                 </View>
             </View>
+            {isDevMode && <View style={{flexDirection: "row", padding: 10, alignContent: "stretch"}}>
+                <View style={{flex:1}}>
+                    <Button title="check" onPress={onClickCheckIsBum}/>
+                </View >
+                <View style={{flex:1}}>
+                    <Button title="bonus" onPress={onClickFindBonus}/>
+                </View>
+                <View style={{flex:1}}>
+                    <Button title="bum" onPress={onClickBum}/>
+                </View>
+                <View style={{flex:1}}>
+                    <Button color={"#059"} title="new map" onPress={newMap}/>
+                </View>
+                <View style={{flex:1}}>
+                    <Button color={"#059"} title="set map" onPress={setMapOnClick}/>
+                </View>
+            </View>
+            }
+
         </View>
     )
 }
@@ -204,6 +211,5 @@ const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwa
     )
 }
 const styles = StyleSheet.create({
-    main: {
-    }
+    main: {}
 });

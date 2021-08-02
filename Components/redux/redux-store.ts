@@ -2,13 +2,8 @@ import {Action, applyMiddleware, combineReducers, compose, createStore} from "re
 import thunkMiddleware, {ThunkAction} from "redux-thunk";
 import createSagaMiddleware from 'redux-saga'
 import threeInLineReducer from "./threeInLine-reduser";
+import { composeWithDevTools } from 'remote-redux-devtools';
 
-
-declare global {
-    interface Window {
-        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-    }
-}
 
 const rootReducers = combineReducers({
     threeInLine:threeInLineReducer,
@@ -25,14 +20,13 @@ export type AnyBaseActionType<A extends Action = Action, R = Promise<void>> = Th
 
 
 const sagaMiddleware = createSagaMiddleware()
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+/*const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducers, composeEnhancers(
     applyMiddleware(sagaMiddleware,thunkMiddleware)
+));*/
+const store = createStore(rootReducers, composeWithDevTools(
+    applyMiddleware(sagaMiddleware,thunkMiddleware)
 ));
-
-
-// @ts-ignore
-window.store=store;
 
 
 export default store;

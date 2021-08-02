@@ -11,7 +11,7 @@ import sw5 from "../../../assets/img/G6.png"
 import sw6 from "../../../assets/img/G7.png"
 import sw7 from "../../../assets/img/G8.png"
 import bw8 from "../../../assets/img/G9.png"
-import m1 from "../../../assets/img/молния гор.png"
+import m1 from "../../../assets/img/"
 import m2 from "../../../assets/img/молния верт.png"
 import m3 from "../../../assets/img/молния в+г.png"
 import {threeInLineAction} from "../../redux/threeInLine-reduser";
@@ -132,7 +132,7 @@ export const Sector: FC<PropsType> = ({
     }
 
 
-    return <View style={{flex: 1, height: "100%", backgroundColor: index ? "#11221122" : "#0000"}}
+    return <View style={{/*flex: 1,*/ height: "100%", width:`100%`, backgroundColor: index ? "#11221122" : "#0000"}}
                  onStartShouldSetResponder={() => true}
                  onMoveShouldSetResponder={() => true}
                  onResponderTerminationRequest={() => true}
@@ -228,13 +228,13 @@ const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
             duration: 600,
             useNativeDriver: true
         }).start((finished) => {
-             if (finished.finished) {
-            dispatch(threeInLineAction.increaseAnimationCountEnd(
-                {
-                    i: sector.sectorState.y,
-                    j: sector.sectorState.x
-                }))
-             }
+            if (finished.finished) {
+                dispatch(threeInLineAction.increaseAnimationCountEnd(
+                    {
+                        i: sector.sectorState.y,
+                        j: sector.sectorState.x
+                    }))
+            }
         });
     };
 
@@ -247,8 +247,8 @@ const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
                 anim2.setValue(shiftValueIn)
                 shiftIn()
             } else {
-               /* anim.setValue(valueOut)
-                fadeInOut()*/
+                /* anim.setValue(valueOut)
+                 fadeInOut()*/
 
                 anim2.setValue(shiftValueIn)
                 shiftIn()
@@ -265,8 +265,8 @@ const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
                 transform: shiftAnimationValue && [
                     {translateX: valueIn.x ? anim2 : 0},
                     {translateY: valueIn.y ? anim2 : 0},
-                ] ,
-            }, {height: deskState.length, width: deskState.length}]}>
+                ],
+            }, {height: `100%`, width:`100%`}]}>
                 <Image style={sector.date.isBum ? s.isBum : s.img} source={imgMass[sector.date.state]}/>
                 {sector.date.bonusSector > 0 &&
                 <Image style={s.img} source={bonusImgMass[sector.date.bonusSector - 1]}/>}
@@ -283,23 +283,23 @@ const s = StyleSheet.create({
     },
     fadingContainer: {},
     img: {
-         position: "absolute",
-         start:0,
+        position: "absolute",
+        start: 0,
         borderRadius: 5,
         height: `95%`,
         width: `95%`,
     },
     isBum: {
-         position: "absolute",
-         start:0,
+        position: "absolute",
+        start: 0,
         borderRadius: 5,
         backgroundColor: `#10ac05`,
         height: `95%`,
         width: `95%`,
     },
     score: {
-         position: `absolute`,
-          start:0,
-          bottom: 50,
+        position: `absolute`,
+        start: 0,
+        /*bottom: 50,*/
     }
 });

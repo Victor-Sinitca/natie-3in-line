@@ -23,7 +23,11 @@ const DeskThreeInLine: FC<PropsType> = ({
 
     const returnMapRow = (a: Array<SectorGameType>) => {
         return a.map((b) =>
-            <View key={b.sectorState.x} style={{height: deskState.length, width: deskState.length}}>
+            <View key={b.sectorState.x}
+                  style={styles.cell}
+                 /* style={{height: deskState.length, width: deskState.length}}*/
+
+            >
                 <Sector returnMouseDown={returnMouseDown}
                         returnMouseUp={returnMouseUp}
                         returnMouseOver={returnMouseOver}
@@ -36,23 +40,42 @@ const DeskThreeInLine: FC<PropsType> = ({
     }
 
     const map = userMap.map((a: Array<SectorGameType>) => {
-            return <View key={a[0].sectorState.y} style={{flexDirection: "row", height: deskState.length,}}>
+            return <View key={a[0].sectorState.y}
+                         style={styles.row}
+
+            >
                 {returnMapRow(a)}
             </View>
         }
     )
     return (
-        <View style={styles.main}>
+        <View style={[styles.main,{aspectRatio:userMap[0].length/userMap.length,}]}>
             {map}
         </View>
     )
 }
 const styles = StyleSheet.create({
-    main: {
+    row:{
         flex:1,
+        /*height:`100%`,*/
+        flexDirection: "row",
+
+    },
+    cell:{
+        flex:1,
+        height:"100%",
+        width:"100%",
+    },
+    main: {
+        /*flex:1,*/
+
+        /*height:500,*/
+        /*width: "100%",*/
+       /* minHeight:`auto`,*/
         /*height: "auto",
         width: "auto",*/
         flexDirection: "column",
+        backgroundColor:`#9eeaea`
         /*shadowColor: "blue",
         shadowOffset: {
             width: 0,
