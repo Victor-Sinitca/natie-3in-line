@@ -9,11 +9,12 @@ import {
     getMap
 } from "../redux/threeInLine-selectors";
 import {deleteAnimationsThink, threeInLineAction} from "../redux/threeInLine-reduser";
-import {ThreeInLine} from "./ThreeInLine";
+
 import * as React from "react";
 import {View, Text, StyleSheet} from "react-native";
+import ThreeInLine from "./ThreeInLine";
 
-export const ThreeInLineContainer = () => {
+const ThreeInLineContainer = () => {
     const dispatch = useDispatch()
     const map = useSelector(getMap)
     const deskState = useSelector(getDeskState)
@@ -28,12 +29,12 @@ export const ThreeInLineContainer = () => {
             (animationCount === animationCountEnd.count)) {
             dispatch(deleteAnimationsThink(map, animationCountEnd))
         }
-    }, [animationCount, animationCountEnd, dispatch, map])
+    }, [animationCount, animationCountEnd, map])
 
 
     useEffect(() => {
         dispatch(threeInLineAction.setMap(initMapGame3inLine(deskState.x, deskState.y, gemsCount)))
-    }, [gemsCount, deskState, dispatch])
+    }, [gemsCount, deskState])
 
 
     return <View style={styles.main}>
@@ -43,7 +44,8 @@ export const ThreeInLineContainer = () => {
 }
 const styles = StyleSheet.create({
     main: {
-        width:"100%",
-        height:"100%"
+        width: "100%",
+        height: "100%"
     }
 });
+export default ThreeInLineContainer

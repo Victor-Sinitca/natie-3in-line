@@ -1,7 +1,7 @@
 import * as React from "react";
 import {FC} from "react";
-import {Sector, SectorGameType} from "./Sector/Sector";
-import {Dimensions, StyleSheet, Text, View,} from "react-native";
+import Sector, {SectorGameType} from "./Sector/Sector";
+import {StyleSheet, View,} from "react-native";
 import {deskStateType} from "./ThreeInLine";
 
 export type MapsGameType = Array<Array<SectorGameType>>
@@ -20,73 +20,43 @@ const DeskThreeInLine: FC<PropsType> = ({
                                             userMap, deskState, returnMouseDown, selectSector,
                                             returnMouseUp, returnMouseOver, isEndTurn,
                                         }) => {
-
-    const returnMapRow = (a: Array<SectorGameType>) => {
-        return a.map((b) =>
-            <View key={b.sectorState.x}
-                  style={styles.cell}
-                 /* style={{height: deskState.length, width: deskState.length}}*/
-
-            >
-                <Sector returnMouseDown={returnMouseDown}
-                        returnMouseUp={returnMouseUp}
-                        returnMouseOver={returnMouseOver}
-                        key={b.sectorState.x * 10 + b.sectorState.y}
-                        sector={b}
-                        deskState={deskState}
-                />
-            </View>
-        )
-    }
-
-    const map = userMap.map((a: Array<SectorGameType>) => {
-            return <View key={a[0].sectorState.y}
-                         style={styles.row}
-
-            >
-                {returnMapRow(a)}
-            </View>
-        }
-    )
     return (
-        <View style={[styles.main,{aspectRatio:userMap[0].length/userMap.length,}]}>
-            {map}
+        <View style={[styles.main, {aspectRatio: userMap[0].length / userMap.length,}]}>
+            {userMap.map((a: Array<SectorGameType>) =>
+                <View key={a[0].sectorState.y} style={styles.row}>
+                    {a.map((b) =>
+                        <View key={b.sectorState.x} style={styles.cell}>
+                            <Sector returnMouseDown={returnMouseDown}
+                                    returnMouseUp={returnMouseUp}
+                                    returnMouseOver={returnMouseOver}
+                                    key={b.sectorState.x * 10 + b.sectorState.y}
+                                    sector={b}
+                                    deskState={deskState}
+                            />
+                        </View>
+                    )}
+                </View>
+            )}
         </View>
     )
 }
 const styles = StyleSheet.create({
-    row:{
-        flex:1,
-        /*height:`100%`,*/
+    row: {
+        flex: 1,
         flexDirection: "row",
 
     },
-    cell:{
-        flex:1,
-        height:"100%",
-        width:"100%",
+    cell: {
+        flex: 1,
+        height: "100%",
+        width: "100%",
     },
     main: {
-        /*flex:1,*/
-
-        /*height:500,*/
-        /*width: "100%",*/
-       /* minHeight:`auto`,*/
-        /*height: "auto",
-        width: "auto",*/
+        /*height:"100%",*/
         flexDirection: "column",
-        backgroundColor:`#9eeaea`
-        /*shadowColor: "blue",
-        shadowOffset: {
-            width: 0,
-            height: 0
-        },
-        shadowOpacity: 10,
-        shadowRadius: 10,
-        elevation:10,
-        backgroundColor:"#0000"*/
+        backgroundColor: `#9eeaea`
     }
 });
 
 
-export default DeskThreeInLine
+export default React.memo(DeskThreeInLine)

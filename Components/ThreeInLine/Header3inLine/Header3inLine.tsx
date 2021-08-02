@@ -19,7 +19,7 @@ type PropsType = {
     setEndMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
+const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
     const dispatch = useDispatch()
     const score = useSelector(getScore)
     const addScore = useSelector(getAddScore)
@@ -213,3 +213,5 @@ const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwa
 const styles = StyleSheet.create({
     main: {}
 });
+
+export default React.memo(Header3inLine)

@@ -1,21 +1,22 @@
+import * as React from "react";
 import {FC, useEffect, useState} from "react";
 import {isNearbyWithSector} from "./gameLogic/isNearbyWithSector";
 import {SetIsFirstClickSector} from "./gameLogic/setIsFirstClickSector";
-import {sectorsNotEqual} from "./gameLogic/sectorsNotEqual";
 import {checkMap} from "./gameLogic/checkMap";
 import {useDispatch, useSelector} from "react-redux";
 import {
     boomEffectThink,
     checkMapThink,
     checkOnLineInSelectSectorsThink,
-    endTurnThink, MapsGameType,
-    replacementSectorsThink, SectorGameType,
+    endTurnThink,
+    MapsGameType,
+    replacementSectorsThink,
+    SectorGameType,
     selectNewSectorThink,
     threeInLineAction,
     unselectNewSectorThink
 } from "../redux/threeInLine-reduser";
 import {
-    getDeskState,
     getIsBoom,
     getIsDevMode,
     getIsEndTurn,
@@ -24,9 +25,8 @@ import {
     getSelectSector
 } from "../redux/threeInLine-selectors";
 import DeskThreeInLine from "./DeskThreeInLine";
-import * as React from "react";
-import {View, Text, StyleSheet} from "react-native";
-import {Header3inLine} from "./Header3inLine/Header3inLine";
+import {StyleSheet, Text, View} from "react-native";
+import Header3inLine from "./Header3inLine/Header3inLine";
 
 
 export type deskStateType = {
@@ -38,10 +38,9 @@ type PropsType = {
     animationCount: number
     deskState: deskStateType
 }
-export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState}) => {
+const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState}) => {
     const dispatch = useDispatch()
     const [endMove, setEndMove] = useState<boolean>(false)
-    const prevMap = useSelector(getPrevMap)
     const score = useSelector(getScore)
     const isDevMode = useSelector(getIsDevMode)
     const selectSector = useSelector(getSelectSector)
@@ -108,22 +107,10 @@ export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, desk
 
 // уничтожение секторов
     useEffect(() => {
-        if (!isDevMode) {
-            /* console.log("boomFunc")*/
-            if (isEndTurn && !isBoom && !animationCount) {
+        if (!isDevMode && isEndTurn && !isBoom && !animationCount) {
                 dispatch(boomEffectThink(map, gemsCount, score))
-                /* setTimeout(() => {
-                     /!* console.log("boomFunc ==> is bum")*!/
-                     dispatch(boomEffectThink(map,gemsCount,score))
-                 }, 200);*/
-            } /*else {
-                /!*console.log("boomFunc ==> new turn")*!/
-                dispatch(threeInLineAction.setIsBoom(false))
-            }*/
         }
-    }, [/*dispatch,*/ isEndTurn, isBoom, animationCount,
-        /*gemsCount, isDevMode*/])
-
+    }, [isEndTurn, isBoom, animationCount,])
 // нахождение секторов для уничтожения
     useEffect(() => {
         /* console.log("checkMap")*/
@@ -135,26 +122,25 @@ export const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, desk
                 dispatch(endTurnThink())
             }
         }
-    }, [/*dispatch,*/ isBoom,
-        isDevMode, /*map*/])
+    }, [isBoom,isDevMode,])
 
     return <View style={styles.main}>
         <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>
         <DeskThreeInLine userMap={map} selectSector={selectSector}
-                             returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
-                             returnMouseUp={onMouseUp}
-                             returnMouseOver={onMouseOver}
-                             isEndTurn={isEndTurn}
-                             deskState={deskState}
-            />
+                         returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
+                         returnMouseUp={onMouseUp}
+                         returnMouseOver={onMouseOver}
+                         isEndTurn={isEndTurn}
+                         deskState={deskState}
+        />
         {endMove && <View> <Text> нет ходов</Text> </View>}
     </View>
-
-
 }
 const styles = StyleSheet.create({
     main: {
-        width:"100%",
-        height:"100%"
+        width: "100%",
+        height: "100%"
     }
 });
+
+export default React.memo(ThreeInLine)
