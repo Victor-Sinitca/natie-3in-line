@@ -8,7 +8,7 @@ import ThreeInLineContainer from "./Components/ThreeInLine/ThreeInLineContainer"
 
 const MyApp = () => {
     return (
-        <SafeAreaView  style={styles.container}>
+        <SafeAreaView   style={styles.container}>
             <ThreeInLineContainer/>
             <StatusBar style="auto"/>
         </SafeAreaView >

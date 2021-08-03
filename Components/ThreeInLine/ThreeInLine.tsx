@@ -48,58 +48,57 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
     const isBoom = useSelector(getIsBoom)
 
 
-    const onMouseDown = (sector: SectorGameType) => {
+    const onMouseDown = (i:number, j:number) => {
         if (!isEndTurn) {
             if (selectSector) {
                 // есть выделенный сектор
-                if (sector.sectorState.isSelected) {
+                if (map[i][j].sectorState.isSelected) {
                     /* console.log("onMouseDown - old sector selected ")*/
                     // если сектор был выделен  установка флага на снятие выделения
-                    dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, sector)))
-                } else if (isNearbyWithSector(selectSector, sector)) {
+                    dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, map[i][j])))
+               /* } else if (isNearbyWithSector(selectSector, sector)) {*/
+                } else if (isNearbyWithSector(selectSector, map[i][j])) {
                     /* console.log("onMouseDown -isNearbyWithSector")*/
-                    dispatch(checkOnLineInSelectSectorsThink(map, selectSector, sector, false))
+                    dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[i][j], false))
                 } else {
                     /* console.log("onMouseDown - new sector selected")*/
                     // выбран сектор не рядом выделение сектора
                     // удаление старого выдления, установка нового выделения
                     // запись карты
-                    dispatch(replacementSectorsThink(map, sector, selectSector))
-                    dispatch(threeInLineAction.setSelectSector(sector))
+                    dispatch(replacementSectorsThink(map, map[i][j], selectSector))
+                    dispatch(threeInLineAction.setSelectSector(map[i][j]))
                 }
             } else {
                 /*console.log("onMouseDown -selectNewSectorThink")*/
                 // выделение и сохранение выделенного сектора как  выделенный
-                dispatch(selectNewSectorThink(map, sector))
+                dispatch(selectNewSectorThink(map, map[i][j]))
             }
         }
     }
-    const onMouseDownDev = (sector: SectorGameType) => {
+    const onMouseDownDev = (i:number, j:number) => {
         if (selectSector) {
-            if (sector.sectorState.isSelected) {
-                dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, sector)))
+            if (map[i][j].sectorState.isSelected) {
+                dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, map[i][j])))
             } else {
-                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, sector, true))
+                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[i][j], true))
             }
         } else if (map) {
-            dispatch(selectNewSectorThink(map, sector))
+            dispatch(selectNewSectorThink(map, map[i][j]))
         }
 
     }
-    const onMouseUp = (sector: SectorGameType) => {
-        if (sector.sectorState.isFirstClick && sector.sectorState.isSelected && !isEndTurn) {
-            /*console.log("onMouseUp -unselectNewSectorThink")*/
-            dispatch(unselectNewSectorThink(map, sector))
+
+    const onMouseUp = (i:number, j:number) => {
+        if (map[i][j].sectorState.isFirstClick && map[i][j].sectorState.isSelected && !isEndTurn) {
+            dispatch(unselectNewSectorThink(map, map[i][j]))
         }
     }
-    const onMouseOver = (sector: SectorGameType) => {
+
+    const onMouseOver = (j:number, i:number) => {
         if (selectSector && !isEndTurn) {
-            if (map[sector.sectorState.y]?.[sector.sectorState.x] && isNearbyWithSector(selectSector, sector)) {
-                /* console.log("onMouseOver -isNearbyWithSector")*/
-
-                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[sector.sectorState.y][sector.sectorState.x], false))
+            if (map[map[i][j].sectorState.y]?.[map[i][j].sectorState.x] && isNearbyWithSector(selectSector, map[i][j])) {
+                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[map[i][j].sectorState.y][map[i][j].sectorState.x], false))
             } else {
-                /*console.log("onMouseOver -unselectNewSectorThink")*/
                 dispatch(unselectNewSectorThink(map, selectSector))
             }
         }
