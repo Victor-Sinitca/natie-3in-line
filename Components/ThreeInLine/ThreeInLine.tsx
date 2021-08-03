@@ -96,8 +96,8 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
 
     const onMouseOver = (j:number, i:number) => {
         if (selectSector && !isEndTurn) {
-            if (map[map[i][j].sectorState.y]?.[map[i][j].sectorState.x] && isNearbyWithSector(selectSector, map[i][j])) {
-                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[map[i][j].sectorState.y][map[i][j].sectorState.x], false))
+            if (map[i]?.[j] && isNearbyWithSector(selectSector, map[i][j])) {
+                dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[i][j], false))
             } else {
                 dispatch(unselectNewSectorThink(map, selectSector))
             }

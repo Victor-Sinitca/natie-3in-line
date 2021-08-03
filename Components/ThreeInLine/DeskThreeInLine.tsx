@@ -49,9 +49,17 @@ const DeskThreeInLine: FC<PropsType> = ({
         }
     }
     const handlerMouseOver = (event: GestureResponderEvent) => {
-        /* if (!isEndTurn) {
-             returnMouseOver(sector)
-         }*/
+        if (!isEndTurn && layout
+            && event.nativeEvent.pageY > layout.y
+            && event.nativeEvent.pageY < layout.height + layout.y
+            && event.nativeEvent.pageX > layout.x
+            && event.nativeEvent.pageX < layout.width + layout.x) {
+            const i = Math.trunc((event.nativeEvent.pageY - layout.y) / (layout.height / countOfY))
+            const j = Math.trunc((event.nativeEvent.pageX - layout.x) / (layout.width / countOfX))
+            if(!userMap[i][j].sectorState.isSelected){
+                returnMouseOver(i, j)
+            }
+        }
 
     }
 
