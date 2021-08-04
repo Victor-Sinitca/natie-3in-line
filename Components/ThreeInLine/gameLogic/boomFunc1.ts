@@ -1,10 +1,16 @@
 import {getRandomInt} from "./getRandom";
 import {MapsGameType} from "../../redux/threeInLine-reduser";
 
-
-export function setAnimationCSS(i: number, j: number, ii: number, jj: number,
+export function setAnimationCSS1(i: number, j: number, ii: number, jj: number,
                                 fall: boolean, shift: boolean,) {
-    return `keyframeS${i}S${j}S${ii}S${jj}S${fall}S${shift}`
+    return {
+        i:i,
+        j:j,
+        shiftI:ii,
+        shiftJ:jj,
+        fall:fall,
+        shift:shift
+    }
 }
 
 
@@ -31,7 +37,7 @@ export const boomFunc1 = (Map: MapsGameType, gemsCount = 4 as number,) => {
             map[i][j].date.state = map[I][j].date.state
             // устанавливаем анимацию сдвига сектора
             map[i][j].sectorState.animateMove = {
-                name: setAnimationCSS(i, j, I - i, 0, true, true),
+                animateObject:setAnimationCSS1(i, j, I - i, 0, true, true)
             }
             // увеличиваем счетчик анимаций
             animationsCount++
@@ -55,7 +61,7 @@ export const boomFunc1 = (Map: MapsGameType, gemsCount = 4 as number,) => {
                     isSelected: false,
                     isFirstClick: false,
                     animateMove: {
-                        name: setAnimationCSS(i, j, I - i - pozNewSector, 0, true, true),
+                        animateObject:setAnimationCSS1(i, j, I - i - pozNewSector, 0, true, true)
                     },
                     animateStart: false,
                 },
@@ -92,7 +98,7 @@ export const boomFunc1 = (Map: MapsGameType, gemsCount = 4 as number,) => {
                 map[ii][j].date.addBonusSector = 0
                 // устанавливаем анимацию сдвига сектора
                 map[i][j].sectorState.animateMove = {
-                    name: setAnimationCSS(i, j, ii - i, 0, true, true),
+                    animateObject: setAnimationCSS1(i, j, ii - i, 0, true, true),
                 }
                 // увеличиваем счетчик анимаций
                 animationsCount++
@@ -106,7 +112,7 @@ export const boomFunc1 = (Map: MapsGameType, gemsCount = 4 as number,) => {
                 map[ii][j].date.addBonusSector = 0
                 // устанавливаем анимацию сдвига сектора
                 map[i][j].sectorState.animateMove = {
-                    name: setAnimationCSS(i, j, ii - i, 0, true, true),
+                    animateObject: setAnimationCSS1(i, j, ii - i, 0, true, true),
                 }
                 // увеличиваем счетчик анимаций
                 animationsCount++

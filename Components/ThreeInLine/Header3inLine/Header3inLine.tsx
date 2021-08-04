@@ -106,10 +106,10 @@ const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
     return (
         <View style={[styles.main, {flexDirection: "column"}]}>
             <View style={{flexDirection: "row", width: "100%", alignContent: "space-around", padding: 10}}>
-                <FieldChangeButtons label={`верт: ${map.length} `} value={"x"} addLine={addLine}
-                                    takeAwayLine={takeAwayLine}/>
-                <FieldChangeButtons label={`гор: ${map[0].length}`} value={"y"} addLine={addLine}
-                                    takeAwayLine={takeAwayLine}/>
+                <FieldChangeButtons label={`верт: ${map.length} `} nameValue={"x"} addLine={addLine}
+                                    takeAwayLine={takeAwayLine} value={deskState.x}/>
+                <FieldChangeButtons label={`гор: ${map[0].length}`} nameValue={"y"} addLine={addLine}
+                                    takeAwayLine={takeAwayLine} value={deskState.y}/>
                 <View style={{flex: 1}}>
                     <Text>масш:</Text>
                     <View style={{flexDirection: "row"}}>
@@ -163,19 +163,19 @@ const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
                 </View>
             </View>
             {isDevMode && <View style={{flexDirection: "row", padding: 10, alignContent: "stretch"}}>
-                <View style={{flex:1}}>
+                <View style={{flex: 1}}>
                     <Button title="check" onPress={onClickCheckIsBum}/>
-                </View >
-                <View style={{flex:1}}>
+                </View>
+                <View style={{flex: 1}}>
                     <Button title="bonus" onPress={onClickFindBonus}/>
                 </View>
-                <View style={{flex:1}}>
+                <View style={{flex: 1}}>
                     <Button title="bum" onPress={onClickBum}/>
                 </View>
-                <View style={{flex:1}}>
+                <View style={{flex: 1}}>
                     <Button color={"#059"} title="new map" onPress={newMap}/>
                 </View>
-                <View style={{flex:1}}>
+                <View style={{flex: 1}}>
                     <Button color={"#059"} title="set map" onPress={setMapOnClick}/>
                 </View>
             </View>
@@ -189,22 +189,23 @@ type FieldChangeButtonsType = {
     label: string,
     addLine: (value: "x" | "y") => void,
     takeAwayLine: (value: "x" | "y") => void,
-    value: "x" | "y"
+    nameValue: "x" | "y",
+    value: number
 }
-const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwayLine, value}) => {
+const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwayLine, nameValue, value}) => {
     return (
         <View style={{flex: 1}}>
             <Text> {label} </Text>
             <View style={{flexDirection: "row"}}>
                 <View style={{flex: 1, padding: 5}}>
                     <Button title="+" onPress={() => {
-                        addLine(value)
-                    }}/>
+                        addLine(nameValue)
+                    }} disabled={value >= 15}/>
                 </View>
                 <View style={{flex: 1, padding: 5}}>
                     <Button title="-" onPress={() => {
-                        takeAwayLine(value)
-                    }}/>
+                        takeAwayLine(nameValue)
+                    }} disabled={value < 6}/>
                 </View>
             </View>
         </View>

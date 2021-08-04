@@ -1,4 +1,3 @@
-import {deskStateType} from "../ThreeInLine";
 import {FC, useEffect, useRef} from "react";
 import sw0 from "../../../assets/img/G1.png";
 import sw1 from "../../../assets/img/G2.png";
@@ -14,91 +13,42 @@ import m2 from "../../../assets/img/lightningV.png";
 import m3 from "../../../assets/img/lightningVH.png";
 import {useDispatch} from "react-redux";
 import {Animated, Image, StyleSheet, Text, View} from "react-native";
-import {threeInLineAction} from "../../redux/threeInLine-reduser";
+import {SectorGameType, threeInLineAction} from "../../redux/threeInLine-reduser";
 import * as React from "react";
-import {SectorGameType} from "./Sector";
+
 
 type SectorImageType = {
     sector: SectorGameType
-    deskState: deskStateType
+    heightSector:number
 }
 type value = {
     x: number
     y: number
 }
-const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
+const SectorMemo: FC<SectorImageType> = ({sector,heightSector}) => {
     const imgMass = [sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7, bw8]
     const bonusImgMass = [m1, m2, m3,]
-
     const dispatch = useDispatch()
-    let speedAnimation = 0
+
     let shiftValueIn = 0
-    let shiftValueOut = 0
-    let valueIn = {
-        x: 0,
-        y: 0
-    } as value
-    let valueOut = {
-        x: 0,
-        y: 0
-    } as value
+    let valueIn = { x: 0, y: 0 } as value
     let fall: boolean = true
 
-    const shiftAnimationValue = sector.sectorState.animateMove?.name.split("S")
+    const shiftAnimationValue = sector.sectorState.animateMove?.animateObject
     if (shiftAnimationValue) {
-        speedAnimation = (Math.abs(+shiftAnimationValue[3]) + Math.abs(+shiftAnimationValue[4])) / 0.0025
-        fall = shiftAnimationValue[5] !== "true"
-        shiftValueIn = (+shiftAnimationValue[4] * deskState.length + +shiftAnimationValue[3] * deskState.length)
+        fall = shiftAnimationValue.fall
+        shiftValueIn = (shiftAnimationValue.shiftI * heightSector + shiftAnimationValue.shiftJ * heightSector)
         valueIn = {
-            x: +shiftAnimationValue[4] * deskState.length,
-            y: +shiftAnimationValue[3] * deskState.length,
+            x: shiftAnimationValue.shiftJ * heightSector,
+            y: shiftAnimationValue.shiftI * heightSector,
         }
     }
-    let anim = useRef(new Animated.ValueXY({...valueIn})).current
-    let anim2 = useRef(new Animated.Value(shiftValueIn)).current
-    const fadeIn = () => {
-        // Will change fadeAnim value to 1 in 5 seconds
-        Animated.timing(anim, {
-            toValue: valueOut,
-            duration: 600,
-            useNativeDriver: true
-        }).start((finished) => {
-            /* if (finished.finished) {  */
-            dispatch(threeInLineAction.increaseAnimationCountEnd(
-                {
-                    i: sector.sectorState.y,
-                    j: sector.sectorState.x
-                }))
-            /* }*/
-        });
-    };
-
-    const fadeInOut = () => {
-        Animated.timing(anim, {
-            toValue: valueIn,
-            duration: 200,
-            useNativeDriver: true
-        }).start(({finished}) => {
-            if (finished) {
-                Animated.timing(anim, {
-                    toValue: valueOut,
-                    duration: 200,
-                    useNativeDriver: true
-                }).start(({finished}) => {
-                    dispatch(threeInLineAction.increaseAnimationCountEnd(
-                        {
-                            i: sector.sectorState.y,
-                            j: sector.sectorState.x
-                        }))
-                })
-            }
-        });
-    };
+    let anim = useRef(new Animated.Value(shiftValueIn)).current
 
     const shiftIn = () => {
-        Animated.timing(anim2, {
+        Animated.timing(anim, {
             toValue: 0,
-            duration: 600,
+            duration: 200,
             useNativeDriver: true
         }).start((finished) => {
             if (finished.finished) {
@@ -110,34 +60,49 @@ const SectorMemo: FC<SectorImageType> = ({sector, deskState}) => {
             }
         });
     };
-
+    const shiftOut = () => {
+        Animated.timing(anim, {
+            toValue: shiftValueIn,
+            duration: 200,
+            useNativeDriver: true
+        }).start((finished) => {
+            if (finished.finished) {
+                Animated.timing(anim, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }).start((finished) => {
+                    if (finished.finished) {
+                        dispatch(threeInLineAction.increaseAnimationCountEnd(
+                            {
+                                i: sector.sectorState.y,
+                                j: sector.sectorState.x
+                            }))
+                    }
+                });
+            }
+        });
+    };
 
     useEffect(() => {
-        if (speedAnimation) {
-            if (!fall) {
-                /*anim.setValue(valueIn)
-                fadeIn()*/
-                anim2.setValue(shiftValueIn)
+        if (shiftAnimationValue) {
+            if (fall) {
+                anim.setValue(shiftValueIn)
                 shiftIn()
             } else {
-                /* anim.setValue(valueOut)
-                 fadeInOut()*/
-
-                anim2.setValue(shiftValueIn)
-                shiftIn()
-
-
+                anim.setValue(0)
+                shiftOut()
             }
         }
-    }, [speedAnimation, fall])
+    }, [fall,shiftAnimationValue])
 
     return (
         <View style={[s.main,
             {backgroundColor: sector.sectorState.isSelected ? "red" : "#0000",}]}>
             <Animated.View style={[{
-                transform: shiftAnimationValue && [
-                    {translateX: valueIn.x ? anim2 : 0},
-                    {translateY: valueIn.y ? anim2 : 0},
+                transform:  [
+                    {translateX: valueIn.x ? anim : 0},
+                    {translateY: valueIn.y ? anim : 0},
                 ],
             }, {height: `100%`, width:`100%`}]}>
                 <Image style={sector.date.isBum ? s.isBum : s.img} source={imgMass[sector.date.state]}/>
@@ -173,7 +138,6 @@ const s = StyleSheet.create({
     score: {
         position: `absolute`,
         start: 0,
-        /*bottom: 50,*/
     }
 });
 export default React.memo(SectorMemo)

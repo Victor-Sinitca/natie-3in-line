@@ -11,19 +11,11 @@ import {
     endTurnThink,
     MapsGameType,
     replacementSectorsThink,
-    SectorGameType,
     selectNewSectorThink,
     threeInLineAction,
     unselectNewSectorThink
 } from "../redux/threeInLine-reduser";
-import {
-    getIsBoom,
-    getIsDevMode,
-    getIsEndTurn,
-    getPrevMap,
-    getScore,
-    getSelectSector
-} from "../redux/threeInLine-selectors";
+import {getIsBoom, getIsDevMode, getIsEndTurn, getScore, getSelectSector} from "../redux/threeInLine-selectors";
 import DeskThreeInLine from "./DeskThreeInLine";
 import {StyleSheet, Text, View} from "react-native";
 import Header3inLine from "./Header3inLine/Header3inLine";
@@ -48,15 +40,15 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
     const isBoom = useSelector(getIsBoom)
 
 
-    const onMouseDown = (i:number, j:number) => {
-        if (!isEndTurn) {
+    const onMouseDown = (i: number, j: number) => {
+        if (!isEndTurn && !animationCount) {
             if (selectSector) {
                 // есть выделенный сектор
                 if (map[i][j].sectorState.isSelected) {
                     /* console.log("onMouseDown - old sector selected ")*/
                     // если сектор был выделен  установка флага на снятие выделения
                     dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, map[i][j])))
-               /* } else if (isNearbyWithSector(selectSector, sector)) {*/
+                    /* } else if (isNearbyWithSector(selectSector, sector)) {*/
                 } else if (isNearbyWithSector(selectSector, map[i][j])) {
                     /* console.log("onMouseDown -isNearbyWithSector")*/
                     dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[i][j], false))
@@ -75,7 +67,7 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
             }
         }
     }
-    const onMouseDownDev = (i:number, j:number) => {
+    const onMouseDownDev = (i: number, j: number) => {
         if (selectSector) {
             if (map[i][j].sectorState.isSelected) {
                 dispatch(threeInLineAction.setMap(SetIsFirstClickSector(map, map[i][j])))
@@ -87,15 +79,15 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
         }
 
     }
-
-    const onMouseUp = (i:number, j:number) => {
-        if (map[i][j].sectorState.isFirstClick && map[i][j].sectorState.isSelected && !isEndTurn) {
+    const onMouseUp = (i: number, j: number) => {
+        if (map[i][j].sectorState.isFirstClick
+            && map[i][j].sectorState.isSelected
+            && !isEndTurn && !animationCount) {
             dispatch(unselectNewSectorThink(map, map[i][j]))
         }
     }
-
-    const onMouseOver = (j:number, i:number) => {
-        if (selectSector && !isEndTurn) {
+    const onMouseOver = (i: number, j: number) => {
+        if (selectSector && !isEndTurn && !animationCount) {
             if (map[i]?.[j] && isNearbyWithSector(selectSector, map[i][j])) {
                 dispatch(checkOnLineInSelectSectorsThink(map, selectSector, map[i][j], false))
             } else {
@@ -104,24 +96,27 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
         }
     }
 
+
 // уничтожение секторов
     useEffect(() => {
         if (!isDevMode && isEndTurn && !isBoom && !animationCount) {
-                dispatch(boomEffectThink(map, gemsCount, score))
+            /*console.log("boomEffectThink")*/
+            dispatch(boomEffectThink(map, gemsCount, score))
         }
     }, [isEndTurn, isBoom, animationCount,])
 // нахождение секторов для уничтожения
     useEffect(() => {
-        /* console.log("checkMap")*/
         if (isBoom && !isDevMode) {
             const newMap = checkMap(map)
             if (newMap.isBum) {
+                /*console.log("checkMapThink")*/
                 dispatch(checkMapThink(newMap.map))
             } else {
+                /*console.log("endTurnThink")*/
                 dispatch(endTurnThink())
             }
         }
-    }, [isBoom,isDevMode,])
+    }, [isBoom, isDevMode,])
 
     return <View style={styles.main}>
         <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>

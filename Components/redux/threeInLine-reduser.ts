@@ -11,7 +11,7 @@ import {
     blowUpCrosshair,
     blowUpSelectedSectors
 } from "../ThreeInLine/gameLogic/blowUpFunc";
-import {boomFunc1, setAnimationCSS} from "../ThreeInLine/gameLogic/boomFunc1";
+import {boomFunc1, setAnimationCSS1} from "../ThreeInLine/gameLogic/boomFunc1";
 import {deleteAnimationNameInMap} from "../ThreeInLine/gameLogic/deleteAnimationNameInMap";
 
 
@@ -24,7 +24,15 @@ export  type SectorGameType = {
         isSelected: boolean,
         isFirstClick: boolean,
         animateMove: {
-            name: string,
+           /* name: string,*/
+            animateObject:{
+                i:number,
+                j:number,
+                shiftI:number,
+                shiftJ:number,
+                fall:boolean,
+                shift:boolean
+            }
         } | null,
         animateStart: boolean,
     },
@@ -244,9 +252,6 @@ export const boomEffectThink = (map: MapsGameType, gemsCount: number, score: num
 export const checkMapThink = (map: MapsGameType): AnyBaseActionType => {
     return async (dispatch) => {
         /* console.log("checkMapThink")*/
-
-
-
         dispatch(threeInLineAction.setMap(findBonusBumFunc(map)))
         dispatch(threeInLineAction.setIsBoom(false))
     }
@@ -280,17 +285,17 @@ const setHandleAnimation = (Map: MapsGameType, sector1: SectorGameType, sector2:
     }
     map[sector1.sectorState.y][sector1.sectorState.x] = {...Map[sector1.sectorState.y][sector1.sectorState.x]}
     map[sector1.sectorState.y][sector1.sectorState.x].sectorState.animateMove = {
-        name: setAnimationCSS(sector1.sectorState.y, sector1.sectorState.x,
+        animateObject:setAnimationCSS1(sector1.sectorState.y, sector1.sectorState.x,
             sector2.sectorState.y - sector1.sectorState.y,
             sector2.sectorState.x - sector1.sectorState.x,
-            isLine, isLine),
+            isLine, isLine)
     }
     map[sector2.sectorState.y][sector2.sectorState.x] = {...Map[sector2.sectorState.y][sector2.sectorState.x]}
     map[sector2.sectorState.y][sector2.sectorState.x].sectorState.animateMove = {
-        name: setAnimationCSS(sector2.sectorState.y, sector2.sectorState.x,
+        animateObject:setAnimationCSS1(sector2.sectorState.y, sector2.sectorState.x,
             sector1.sectorState.y - sector2.sectorState.y,
             sector1.sectorState.x - sector2.sectorState.x,
-            isLine, isLine),
+            isLine, isLine)
     }
     return map
 }
