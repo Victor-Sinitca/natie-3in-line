@@ -11,7 +11,6 @@ export const deleteAnimationNameInMap = (Map: MapsGameType, sectors: Array<{ i: 
         let sector = sectors[n]
         map[sector.i][sector.j] = {...Map[sector.i][sector.j]}
         map[sector.i][sector.j].sectorState = {...Map[sector.i][sector.j].sectorState}
-/*        map[sector.i][sector.j].sectorState.animateMove = {name: ""}*/
         map[sector.i][sector.j].sectorState.animateMove = null
     }
     return map

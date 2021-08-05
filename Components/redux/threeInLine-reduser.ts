@@ -139,7 +139,7 @@ const threeInLineReducer = (state = initialState as initialStateType, action: Ac
             return {
                 ...state,
                 animationCountEnd: {
-                    ...state.animationCountEnd,
+                    /*...state.animationCountEnd,*/
                     count: 0,
                     sectors: []
                 }

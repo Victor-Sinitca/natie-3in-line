@@ -11,21 +11,24 @@ import {MapsGameType} from "../DeskThreeInLine";
 import {boomFunc1} from "../gameLogic/boomFunc1";
 import * as React from "react";
 import {View, Text, Button, StyleSheet} from "react-native";
+import FieldChangeButtons from "./FieldChangeButtons";
+import GemsChangeButtons from "./GemsChangeButtons";
 
 
 type PropsType = {
     map: MapsGameType
     gemsCount: number
+    score:number
+    isDevMode:boolean
+    isEndTurn:boolean
     setEndMove: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
+const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount,score
+,isDevMode,isEndTurn}) => {
     const dispatch = useDispatch()
-    const score = useSelector(getScore)
     const addScore = useSelector(getAddScore)
     const deskState = useSelector(getDeskState)
-    const isDevMode = useSelector(getIsDevMode)
-    const isEndTurn = useSelector(getIsEndTurn)
 
     const onClickBum = () => {
         dispatch(threeInLineAction.setPrevMap(JSON.parse(JSON.stringify(map))))
@@ -83,18 +86,6 @@ const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
             gemsCount
         )))
     }
-    const changeSizeSector = (add: boolean) => {
-        if (add) {
-            dispatch(threeInLineAction.setDeskState({
-                ...deskState, length: deskState.length + 1
-            }))
-        } else if (deskState.length > 10) {
-            dispatch(threeInLineAction.setDeskState({
-                ...deskState, length: deskState.length - 1
-            }))
-        }
-
-    }
     const changeCountGems = (add: boolean) => {
         if (add) {
             dispatch(threeInLineAction.setGemsCount(gemsCount + 1))
@@ -110,38 +101,7 @@ const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
                                     takeAwayLine={takeAwayLine} value={deskState.x}/>
                 <FieldChangeButtons label={`гор: ${map[0].length}`} nameValue={"y"} addLine={addLine}
                                     takeAwayLine={takeAwayLine} value={deskState.y}/>
-                <View style={{flex: 1}}>
-                    <Text>масш:</Text>
-                    <View style={{flexDirection: "row"}}>
-                        <View style={{flex: 1, padding: 5}}>
-                            <Button title="+" onPress={() => {
-                                changeSizeSector(true)
-                            }}/>
-                        </View>
-                        <View style={{flex: 1, padding: 5}}>
-                            <Button title="-" onPress={() => {
-                                changeSizeSector(false)
-                            }}/>
-                        </View>
-                    </View>
-                </View>
-                <View style={{flex: 1}}>
-                    <Text>камней: {gemsCount}</Text>
-                    <View style={{flexDirection: "row"}}>
-                        <View style={{flex: 1, padding: 5}}>
-                            <Button title="+" disabled={gemsCount > 7}
-                                    onPress={() => {
-                                        changeCountGems(true)
-                                    }}/>
-                        </View>
-                        <View style={{flex: 1, padding: 5}}>
-                            <Button title="-" disabled={gemsCount < 5}
-                                    onPress={() => {
-                                        changeCountGems(false)
-                                    }}/>
-                        </View>
-                    </View>
-                </View>
+                <GemsChangeButtons gemsCount={gemsCount} changeCountGems={changeCountGems}/>
             </View>
             <View style={{flexDirection: "row", padding: 10, alignContent: "stretch"}}>
                 <View style={{flex: 1}}>
@@ -185,32 +145,6 @@ const Header3inLine: FC<PropsType> = ({map, setEndMove, gemsCount}) => {
     )
 }
 
-type FieldChangeButtonsType = {
-    label: string,
-    addLine: (value: "x" | "y") => void,
-    takeAwayLine: (value: "x" | "y") => void,
-    nameValue: "x" | "y",
-    value: number
-}
-const FieldChangeButtons: FC<FieldChangeButtonsType> = ({label, addLine, takeAwayLine, nameValue, value}) => {
-    return (
-        <View style={{flex: 1}}>
-            <Text> {label} </Text>
-            <View style={{flexDirection: "row"}}>
-                <View style={{flex: 1, padding: 5}}>
-                    <Button title="+" onPress={() => {
-                        addLine(nameValue)
-                    }} disabled={value >= 15}/>
-                </View>
-                <View style={{flex: 1, padding: 5}}>
-                    <Button title="-" onPress={() => {
-                        takeAwayLine(nameValue)
-                    }} disabled={value < 6}/>
-                </View>
-            </View>
-        </View>
-    )
-}
 const styles = StyleSheet.create({
     main: {}
 });

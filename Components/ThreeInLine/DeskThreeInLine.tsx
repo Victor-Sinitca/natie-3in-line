@@ -1,9 +1,9 @@
 import * as React from "react";
 import {FC, useState} from "react";
-import Sector from "./Sector/Sector";
 import {GestureResponderEvent, LayoutChangeEvent, LayoutRectangle, StyleSheet, Text, View,} from "react-native";
 import {deskStateType} from "./ThreeInLine";
 import {SectorGameType} from "../redux/threeInLine-reduser";
+import SectorMemo from "./Sector/Sector";
 
 export type MapsGameType = Array<Array<SectorGameType>>
 type PropsType = {
@@ -15,17 +15,20 @@ type PropsType = {
     returnMouseOver: (i: number, j: number) => void
     selectSector: SectorGameType | null
 }
+type LayoutStateType = {
+    layout: LayoutRectangle,
+    heightSector: number,
+    widthSector: number
+}
 const DeskThreeInLine: FC<PropsType> = ({
                                             userMap, deskState, returnMouseDown, selectSector,
                                             returnMouseUp, returnMouseOver, isEndTurn,
                                         }) => {
-    const [layoutState, setLayoutState] = useState<{
-        layout: LayoutRectangle,
-        heightSector: number,
-        widthSector: number
-    }>()
+    const [layoutState, setLayoutState] = useState<LayoutStateType>()
     const countOfX = userMap[0].length
     const countOfY = userMap.length
+    const mapPrint= userMap.map((a) =><RowDesk key={a[0].sectorState.y} a={a} layoutState={layoutState}/>)
+
     const onLayout = (event: LayoutChangeEvent) => {
         setLayoutState({
             layout: event.nativeEvent.layout,
@@ -58,34 +61,19 @@ const DeskThreeInLine: FC<PropsType> = ({
             }
         }
     }
+    return (<View style={[styles.main, {aspectRatio: userMap[0].length / userMap.length,}]}
+                  onLayout={onLayout}
 
-    return (<>
-            {layoutState && <View style={[styles.main, {aspectRatio: userMap[0].length / userMap.length,}]}
-                                  onLayout={onLayout}
+                  onStartShouldSetResponder={() => true}
+                  onMoveShouldSetResponder={() => true}
+                  onResponderTerminationRequest={() => true}
 
-                                  onStartShouldSetResponder={() => true}
-                                  onMoveShouldSetResponder={() => true}
-                                  onResponderTerminationRequest={() => true}
-
-                                  onResponderStart={handlerMouseDown}
-                                  onResponderRelease={handlerMouseUp}
-                                  onResponderMove={handlerMouseOver}
+                  onResponderStart={handlerMouseDown}
+                  onResponderRelease={handlerMouseUp}
+                  onResponderMove={handlerMouseOver}
             >
-                {userMap.map((a: Array<SectorGameType>) =>
-                    <View key={a[0].sectorState.y} style={styles.row}>
-                        {a.map((b) =>
-                            <View key={b.sectorState.x} style={styles.cell}>
-                                <Sector key={b.sectorState.x * 10 + b.sectorState.y}
-                                        sector={b}
-                                        heightSector={layoutState.heightSector}
-                                />
-                            </View>
-                        )}
-                    </View>
-                )}
+            {mapPrint}
             </View>
-            }
-        </>
     )
 }
 const styles = StyleSheet.create({
@@ -119,4 +107,29 @@ function isResponder(isEndTurn: boolean, layoutState: {
         && event.nativeEvent.pageX < layoutState.layout.width + layoutState.layout.x)
 }
 
-
+type RowDeskType = {
+    a: Array<SectorGameType>,
+    layoutState: LayoutStateType | undefined
+}
+const RowDesk: FC<RowDeskType> = ({a, layoutState}) => {
+    const cellDeskPrint= a.map((b) => <CellDesk key={b.sectorState.x} b={b} layoutState={layoutState}/>)
+    return (
+        <View style={styles.row}>
+            {cellDeskPrint}
+        </View>
+    )
+}
+type CellDeskType = {
+    b: SectorGameType,
+    layoutState: LayoutStateType |undefined
+}
+const CellDesk: FC<CellDeskType> = ({b, layoutState}) => {
+    return (
+        <View style={styles.cell}>
+            {layoutState && <SectorMemo key={b.sectorState.x * 10 + b.sectorState.y}
+                                    sector={b}
+                                    heightSector={layoutState.heightSector}
+            />}
+        </View>
+    )
+}

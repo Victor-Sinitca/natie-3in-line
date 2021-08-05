@@ -119,7 +119,8 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
     }, [isBoom, isDevMode,])
 
     return <View style={styles.main}>
-        <Header3inLine map={map} setEndMove={setEndMove} gemsCount={gemsCount}/>
+        <Header3inLine map={map} gemsCount={gemsCount} score={score} isDevMode={isDevMode}
+                       isEndTurn={isEndTurn} setEndMove={setEndMove}/>
         <DeskThreeInLine userMap={map} selectSector={selectSector}
                          returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
                          returnMouseUp={onMouseUp}
