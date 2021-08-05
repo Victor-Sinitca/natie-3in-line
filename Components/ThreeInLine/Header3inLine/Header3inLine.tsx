@@ -7,7 +7,7 @@ import {initMapGame3inLineFalseGame} from "../gameLogic/initMapGame3inLineFalseG
 import {useDispatch, useSelector} from "react-redux";
 import {getAddScore, getDeskState, getIsDevMode, getIsEndTurn, getScore} from "../../redux/threeInLine-selectors";
 import {threeInLineAction} from "../../redux/threeInLine-reduser";
-import {MapsGameType} from "../DeskThreeInLine";
+import {MapsGameType} from "../Desk/DeskThreeInLine";
 import {boomFunc1} from "../gameLogic/boomFunc1";
 import * as React from "react";
 import {View, Text, Button, StyleSheet} from "react-native";

@@ -16,7 +16,7 @@ import {
     unselectNewSectorThink
 } from "../redux/threeInLine-reduser";
 import {getIsBoom, getIsDevMode, getIsEndTurn, getScore, getSelectSector} from "../redux/threeInLine-selectors";
-import DeskThreeInLine from "./DeskThreeInLine";
+import DeskThreeInLine from "./Desk/DeskThreeInLine";
 import {StyleSheet, Text, View} from "react-native";
 import Header3inLine from "./Header3inLine/Header3inLine";
 
@@ -121,12 +121,11 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
     return <View style={styles.main}>
         <Header3inLine map={map} gemsCount={gemsCount} score={score} isDevMode={isDevMode}
                        isEndTurn={isEndTurn} setEndMove={setEndMove}/>
-        <DeskThreeInLine userMap={map} selectSector={selectSector}
+        <DeskThreeInLine userMap={map}
                          returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
                          returnMouseUp={onMouseUp}
                          returnMouseOver={onMouseOver}
                          isEndTurn={isEndTurn}
-                         deskState={deskState}
         />
         {endMove && <View> <Text> нет ходов</Text> </View>}
     </View>

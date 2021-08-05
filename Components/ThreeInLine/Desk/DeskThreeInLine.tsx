@@ -1,27 +1,25 @@
 import * as React from "react";
 import {FC, useState} from "react";
 import {GestureResponderEvent, LayoutChangeEvent, LayoutRectangle, StyleSheet, Text, View,} from "react-native";
-import {deskStateType} from "./ThreeInLine";
-import {SectorGameType} from "../redux/threeInLine-reduser";
-import SectorMemo from "./Sector/Sector";
+import {deskStateType} from "../ThreeInLine";
+import {SectorGameType} from "../../redux/threeInLine-reduser";
+import RowDesk from "./RowDesk";
 
 export type MapsGameType = Array<Array<SectorGameType>>
 type PropsType = {
-    deskState: deskStateType
     isEndTurn: boolean
     userMap: MapsGameType
     returnMouseDown: (i: number, j: number) => void
     returnMouseUp: (i: number, j: number) => void
     returnMouseOver: (i: number, j: number) => void
-    selectSector: SectorGameType | null
 }
-type LayoutStateType = {
+export type LayoutStateType = {
     layout: LayoutRectangle,
     heightSector: number,
     widthSector: number
 }
 const DeskThreeInLine: FC<PropsType> = ({
-                                            userMap, deskState, returnMouseDown, selectSector,
+                                            userMap,  returnMouseDown,
                                             returnMouseUp, returnMouseOver, isEndTurn,
                                         }) => {
     const [layoutState, setLayoutState] = useState<LayoutStateType>()
@@ -77,17 +75,7 @@ const DeskThreeInLine: FC<PropsType> = ({
     )
 }
 const styles = StyleSheet.create({
-    row: {
-        flex: 1,
-        flexDirection: "row",
-    },
-    cell: {
-        flex: 1,
-        height: "100%",
-        width: "100%",
-    },
     main: {
-        /*height:"100%",*/
         flexDirection: "column",
         backgroundColor: `#9eeaea`
     }
@@ -107,29 +95,4 @@ function isResponder(isEndTurn: boolean, layoutState: {
         && event.nativeEvent.pageX < layoutState.layout.width + layoutState.layout.x)
 }
 
-type RowDeskType = {
-    a: Array<SectorGameType>,
-    layoutState: LayoutStateType | undefined
-}
-const RowDesk: FC<RowDeskType> = ({a, layoutState}) => {
-    const cellDeskPrint= a.map((b) => <CellDesk key={b.sectorState.x} b={b} layoutState={layoutState}/>)
-    return (
-        <View style={styles.row}>
-            {cellDeskPrint}
-        </View>
-    )
-}
-type CellDeskType = {
-    b: SectorGameType,
-    layoutState: LayoutStateType |undefined
-}
-const CellDesk: FC<CellDeskType> = ({b, layoutState}) => {
-    return (
-        <View style={styles.cell}>
-            {layoutState && <SectorMemo key={b.sectorState.x * 10 + b.sectorState.y}
-                                    sector={b}
-                                    heightSector={layoutState.heightSector}
-            />}
-        </View>
-    )
-}
+
