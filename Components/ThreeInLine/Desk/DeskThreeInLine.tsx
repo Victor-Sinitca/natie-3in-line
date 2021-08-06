@@ -4,6 +4,8 @@ import {GestureResponderEvent, LayoutChangeEvent, LayoutRectangle, StyleSheet, T
 import {deskStateType} from "../ThreeInLine";
 import {SectorGameType} from "../../redux/threeInLine-reduser";
 import RowDesk from "./RowDesk";
+import FreeJsDesk from "../FreeJsdesk/FreeJsDesk";
+
 
 export type MapsGameType = Array<Array<SectorGameType>>
 type PropsType = {
@@ -59,7 +61,7 @@ const DeskThreeInLine: FC<PropsType> = ({
             }
         }
     }
-    return (<View style={[styles.main, {aspectRatio: userMap[0].length / userMap.length,}]}
+    return (<View  style={[styles.main, {aspectRatio: userMap[0].length / userMap.length, backgroundColor:`#228877`}]}
                   onLayout={onLayout}
 
                   onStartShouldSetResponder={() => true}
@@ -70,7 +72,9 @@ const DeskThreeInLine: FC<PropsType> = ({
                   onResponderRelease={handlerMouseUp}
                   onResponderMove={handlerMouseOver}
             >
-            {mapPrint}
+            {/*<FreeJsDesk/>*/}
+            {/*{mapPrint}*/}
+
             </View>
     )
 }

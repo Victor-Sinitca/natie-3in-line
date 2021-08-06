@@ -19,6 +19,7 @@ import {getIsBoom, getIsDevMode, getIsEndTurn, getScore, getSelectSector} from "
 import DeskThreeInLine from "./Desk/DeskThreeInLine";
 import {StyleSheet, Text, View} from "react-native";
 import Header3inLine from "./Header3inLine/Header3inLine";
+import FreeJsDesk from "./FreeJsdesk/FreeJsDesk";
 
 
 export type deskStateType = {
@@ -119,14 +120,17 @@ const ThreeInLine: FC<PropsType> = ({map, gemsCount, animationCount, deskState})
     }, [isBoom, isDevMode,])
 
     return <View style={styles.main}>
-        <Header3inLine map={map} gemsCount={gemsCount} score={score} isDevMode={isDevMode}
-                       isEndTurn={isEndTurn} setEndMove={setEndMove}/>
-        <DeskThreeInLine userMap={map}
+        {/*<Header3inLine map={map} gemsCount={gemsCount} score={score} isDevMode={isDevMode}
+                       isEndTurn={isEndTurn} setEndMove={setEndMove}/>*/}
+
+        <FreeJsDesk/>
+        {/*<DeskThreeInLine userMap={map}
                          returnMouseDown={isDevMode ? onMouseDownDev : onMouseDown}
                          returnMouseUp={onMouseUp}
                          returnMouseOver={onMouseOver}
                          isEndTurn={isEndTurn}
-        />
+        />*/}
+
         {endMove && <View> <Text> нет ходов</Text> </View>}
     </View>
 }
