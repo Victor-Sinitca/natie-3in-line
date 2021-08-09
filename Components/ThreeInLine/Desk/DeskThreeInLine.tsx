@@ -5,12 +5,14 @@ import {deskStateType} from "../ThreeInLine";
 import {SectorGameType} from "../../redux/threeInLine-reduser";
 import RowDesk from "./RowDesk";
 import FreeJsDesk from "../FreeJsdesk/FreeJsDesk";
+import FreeJs2DDesk from "../FreeJs2Ddesk/FreeJs2DDesk";
 
 
 export type MapsGameType = Array<Array<SectorGameType>>
 type PropsType = {
     isEndTurn: boolean
     userMap: MapsGameType
+    deskState: deskStateType
     returnMouseDown: (i: number, j: number) => void
     returnMouseUp: (i: number, j: number) => void
     returnMouseOver: (i: number, j: number) => void
@@ -21,13 +23,13 @@ export type LayoutStateType = {
     widthSector: number
 }
 const DeskThreeInLine: FC<PropsType> = ({
-                                            userMap,  returnMouseDown,
+                                            userMap, returnMouseDown, deskState,
                                             returnMouseUp, returnMouseOver, isEndTurn,
                                         }) => {
     const [layoutState, setLayoutState] = useState<LayoutStateType>()
     const countOfX = userMap[0].length
     const countOfY = userMap.length
-    const mapPrint= userMap.map((a) =><RowDesk key={a[0].sectorState.y} a={a} layoutState={layoutState}/>)
+    const mapPrint = userMap.map((a) => <RowDesk key={a[0].sectorState.y} a={a} layoutState={layoutState}/>)
 
     const onLayout = (event: LayoutChangeEvent) => {
         setLayoutState({
@@ -61,7 +63,7 @@ const DeskThreeInLine: FC<PropsType> = ({
             }
         }
     }
-    return (<View  style={[styles.main, {aspectRatio: userMap[0].length / userMap.length, backgroundColor:`#228877`}]}
+    return (<View style={[styles.main, {aspectRatio: userMap[0].length / userMap.length, backgroundColor: `#228877`}]}
                   onLayout={onLayout}
 
                   onStartShouldSetResponder={() => true}
@@ -71,11 +73,10 @@ const DeskThreeInLine: FC<PropsType> = ({
                   onResponderStart={handlerMouseDown}
                   onResponderRelease={handlerMouseUp}
                   onResponderMove={handlerMouseOver}
-            >
-            {/*<FreeJsDesk/>*/}
+        >
+            {layoutState && <FreeJs2DDesk deskState={deskState} map={userMap} layoutState={layoutState}/>}
             {/*{mapPrint}*/}
-
-            </View>
+        </View>
     )
 }
 const styles = StyleSheet.create({
