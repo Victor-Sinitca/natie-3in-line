@@ -22,7 +22,7 @@ const FreeJsDesk: FC<{}> = ({}) => {
     const sphere = new SphereMesh();
     const camera = new PerspectiveCamera(100, 0.4, 0.01, 1000);
     const [cameraInitialPositionX, setCameraInitialPositionX] = useState(0)
-    const [cameraInitialPositionY, setCameraInitialPositionY] = useState(100)
+    const [cameraInitialPositionY, setCameraInitialPositionY] = useState(0)
     const [cameraInitialPositionZ, setCameraInitialPositionZ] = useState(45)
 
     function moveZ(distance: any) {

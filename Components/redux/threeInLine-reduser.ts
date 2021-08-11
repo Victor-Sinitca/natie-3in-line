@@ -283,20 +283,27 @@ const setHandleAnimation = (Map: MapsGameType, sector1: SectorGameType, sector2:
     for (let i = 0; i < map.length; i++) {
         map[i] = [...Map[i]]
     }
-    map[sector1.sectorState.y][sector1.sectorState.x] = {...Map[sector1.sectorState.y][sector1.sectorState.x]}
-    map[sector1.sectorState.y][sector1.sectorState.x].sectorState.animateMove = {
-        animateObject:setAnimationCSS1(sector1.sectorState.y, sector1.sectorState.x,
-            sector2.sectorState.y - sector1.sectorState.y,
-            sector2.sectorState.x - sector1.sectorState.x,
+    const y1=sector1.sectorState.y
+    const x1=sector1.sectorState.x
+    const y2=sector2.sectorState.y
+    const x2=sector2.sectorState.x
+
+    map[y1][x1] = {...Map[y1][x1]}
+    map[y1][x1].sectorState.animateMove = {
+        animateObject:setAnimationCSS1(y1, x1,
+            y2 - y1,
+            x2 - x1,
             isLine, isLine)
     }
-    map[sector2.sectorState.y][sector2.sectorState.x] = {...Map[sector2.sectorState.y][sector2.sectorState.x]}
-    map[sector2.sectorState.y][sector2.sectorState.x].sectorState.animateMove = {
-        animateObject:setAnimationCSS1(sector2.sectorState.y, sector2.sectorState.x,
-            sector1.sectorState.y - sector2.sectorState.y,
-            sector1.sectorState.x - sector2.sectorState.x,
+    map[y2][x2] = {...Map[y2][x2]}
+    map[y2][x2].sectorState.animateMove = {
+        animateObject:setAnimationCSS1(y2, x2,
+            y1 - y2,
+            x1 - x2,
             isLine, isLine)
     }
+    console.log(`sector1: ${JSON.stringify(map[y1][x1].sectorState.animateMove)}`)
+    console.log(`sector2: ${JSON.stringify(map[y2][x2].sectorState.animateMove)}`)
     return map
 }
 
@@ -313,7 +320,7 @@ export const checkOnLineInSelectSectorsThink = (Map: MapsGameType,
             map[i] = [...Map[i]]
         }
 
-        dispatch(threeInLineAction.setSelectSector(null))
+
         if (selectSector.date.state === 8) {
             // выделен алмаз
             if (sector.date.state === 8) {
@@ -348,12 +355,12 @@ export const checkOnLineInSelectSectorsThink = (Map: MapsGameType,
             let sectorInMemory = JSON.parse(JSON.stringify(sector)) as SectorGameType
             let selectSectorInMemory = JSON.parse(JSON.stringify(selectSector)) as SectorGameType
             let newMap = replaceSectors(map, selectSectorInMemory, sectorInMemory)
-            const isLineInMap = isSectorInLine(newMap, sectorInMemory, selectSectorInMemory)
+            const mapWithLine = isSectorInLine(newMap, sectorInMemory, selectSectorInMemory)
             // есть комбинация из трех и более
-            if (isLineInMap) {
+            if (mapWithLine) {
                 /*console.log("onMouseDown isLineInMap")*/
                 //проверяем на бонусные сектора в секторах для взрыва
-                map = findBonusBumFunc(isLineInMap)
+                map = findBonusBumFunc(mapWithLine)
                 map = setHandleAnimation(map, sectorInMemory, selectSectorInMemory, true)
                 dispatch(threeInLineAction.setAnimationCount(2))
                 //установка конца хода
@@ -366,10 +373,12 @@ export const checkOnLineInSelectSectorsThink = (Map: MapsGameType,
                     /*console.log("deleteSectorSelection")*/
                     map = deleteSectorSelection(map, selectSector)
                     map = setHandleAnimation(map, sectorInMemory, selectSectorInMemory, false)
+
                     dispatch(threeInLineAction.setAnimationCount(2))
                 }
             }
         }
+        dispatch(threeInLineAction.setSelectSector(null))
         dispatch(threeInLineAction.setMap(map))
     }
 

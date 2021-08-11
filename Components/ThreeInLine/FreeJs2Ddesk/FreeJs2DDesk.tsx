@@ -57,24 +57,30 @@ type FreeJs2DDeskType = {
 const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
     let timeout: number;
     const dispatch = useDispatch()
-    const width1 = layoutState.layout.width
-    const height1 = layoutState.layout.height
+    const widthGL = layoutState.layout.width
+    const heightGL = layoutState.layout.height
     const camera2D = new OrthographicCamera(
-        width1 / -2, width1 / 2,
-        height1 / 2, height1 / -2, 1, 1000);
+        widthGL / -2, widthGL / 2,
+        heightGL / 2, heightGL / -2, 1, 1000);
 
     let mapIsChanged = useRef(false)
     const Map = useRef<MapsGameType>(map)
-
+    Map.current=map
 
     const onContextCreate = async (gl: ExpoWebGLRenderingContext) => {
+        const renderer = new Renderer({gl});
+        const gLViewEl = renderer.domElement
+        /*console.log(`gLViewEl.clientHeight: ${gLViewEl.clientHeight} gLViewEl.clientWidth ${gLViewEl.clientWidth}`)
+        console.log(`gLViewEl.height: ${gLViewEl.height} gLViewEl.width ${gLViewEl.width}`)*/
         const {drawingBufferWidth: width, drawingBufferHeight: height} = gl;
         console.log(`drawingBufferWidth: ${width} drawingBufferHeight ${height}`)
-        const renderer = new Renderer({gl});
+        console.log(`widthGL: ${widthGL} heightGL ${heightGL}`)
+
+
         renderer.setSize(width, height);
         renderer.setClearColor("#6498ce");
         const scene = new Scene();
-        scene.background = new Color(0x660000);
+        /*scene.background = new Color(0x660000);*/
         const ambientLight = new AmbientLight(0xf0f0f0);
         scene.add(ambientLight);
 
@@ -85,13 +91,19 @@ const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
             sector: SectorGameType,
             cube: { cell: CellMesh; material: MeshStandardMaterial; }
         }>>
+        const sizeCell = widthGL / deskState.y
+
+
+        function getDefaultPosition(sector: SectorGameType) {
+            const x = widthGL / -2 + sizeCell / 2 + (sector.sectorState.x * sizeCell)
+            const y = heightGL / 2 - sizeCell / 2 - (sector.sectorState.y * sizeCell)
+            const z = 0
+            return {x, y, z}
+        }
 
         function addOnScene() {
-            function getPosition(H: number, W: number, sector: SectorGameType, deskState: deskStateType) {
+            function getPosition(sector: SectorGameType) {
                 const imgMass = [sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7, bw8]
-                const h = H / 2
-                const w = W / 2
-                const sizeCell = W / deskState.y
                 const material = new MeshStandardMaterial({
                     map: imgMass[sector.date.state],
                     /*map: new TextureLoader().load(require('./assets/icon.png')),*/
@@ -99,20 +111,19 @@ const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
                     transparent: true,
                 })
                 const cell = new CellMesh(sizeCell, sizeCell, material)
-                const x = -w + sizeCell / 2 + (sector.sectorState.x * sizeCell)
-                const y = h - sizeCell / 2 - (sector.sectorState.y * sizeCell)
-                cell.position.set(x, y, 0)
+                const {x, y, z} = getDefaultPosition(sector)
+                cell.position.set(x, y, z)
                 scene.add(cell)
                 return {
-                    cell:cell,
-                    material:material,
+                    cell: cell,
+                    material: material,
                 }
             }
 
             for (let i = 0; i < map.length; i++) {
                 for (let j = 0; j < map[0].length; j++) {
                     cubes[i][j] = {
-                        cube: getPosition(height1, width1, map[i][j], deskState),
+                        cube: getPosition(map[i][j]),
                         sector: map[i][j]
                     }
                 }
@@ -120,47 +131,113 @@ const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
         }
 
 
-        function changeCubes(Map:MapsGameType) {
-            console.log(`changeCubes`)
-            const map = [...Map]
-            const scaleEquals = new Vector3( 1.2, 1.2, 1.2 )
+        function changeCubes(map: MapsGameType) {
+            /*console.log(`changeCubes`)*/
+           /* const map = [...Map]*/
+            const scaleSelect = new Vector3(1.2, 1.2, 1.2)
             const imgMass = [sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7, bw8]
             for (let i = 0; i < map.length; i++) {
                 for (let j = 0; j < map[0].length; j++) {
-                   /* console.log(`i:${i}--l:${j}`)*/
-                    if(cubes[i][j].cube.material.map !== imgMass[map[i][j].date.state]){
-                        console.log(`cube.material.map`)
+                    /*cubes[i][j].sector = map[i][j]*/
+                    /* console.log(`i:${i}--l:${j}`)*/
+                    if (cubes[i][j].cube.material.map !== imgMass[map[i][j].date.state]) {
+                        /*console.log(`cube.material.map`)*/
                         cubes[i][j].cube.material.map = imgMass[map[i][j].date.state]
                         cubes[i][j].cube.material.needsUpdate = true;
                     }
-
-
-                    cubes[i][j].sector = map[i][j]
-                    if(map[i][j].sectorState.isSelected){
+                    if (map[i][j].sectorState.isSelected) {
                         /*console.log(`isSelected`)*/
-                        cubes[i][j].cube.cell.scale.set(1.2,1.2,1.2)
-                    }else if (cubes[i][j].cube.cell.scale.equals(scaleEquals)){
+                        cubes[i][j].cube.cell.scale.set(1.2, 1.2, 1.2)
+                    } else if (cubes[i][j].cube.cell.scale.equals(scaleSelect)) {
                         /*console.log(`isNotSelected`)*/
-                        cubes[i][j].cube.cell.scale.set(1,1,1)
+                        cubes[i][j].cube.cell.scale.set(1, 1, 1)
+                    }
+                    const animateMove = map[i][j].sectorState.animateMove
+                    if (animateMove !== null) {
+                        if (animateMove.animateObject.shift) {
+                            const x = animateMove.animateObject.shiftJ
+                            const y = -animateMove.animateObject.shiftI
+                            const addVector = new Vector3(sizeCell * x, sizeCell * y, 0)
+                            cubes[i][j].cube.cell.position.add(addVector)
+                        } else {
+                            /*const x = animateMove.animateObject.shiftJ
+                            const y = -animateMove.animateObject.shiftI
+                            const addVector = new Vector3(sizeCell * x, sizeCell * y, 0)
+                            cubes[i][j].cube.cell.position.add(addVector)*/
+                        }
                     }
 
-                    if(map[i][j].sectorState.animateMove){
-                        /* if(Map.current[i][j].sectorState.animateMove?.animateObject.fall){
+                    /*cubes[i][j].sector = {...map[i][j]}*/
+                    cubes[i][j].sector = JSON.parse(JSON.stringify(map[i][j]))
 
-                        }else{
+                }
+            }
+        }
 
+        function animateShift() {
+            for (let i = 0; i < cubes.length; i++) {
+                for (let j = 0; j < cubes[0].length; j++) {
+
+                    /*if (Map.current[i][j].sectorState.animateMove) {*/
+                    if (cubes[i][j].sector.sectorState.animateMove) {
+                        const cell = cubes[i][j].cube.cell
+                        const sector = cubes[i][j].sector
+                       /* const sector = Map.current[i][j]*/
+
+
+                        /* const position = new Vector3()
+                         cell.getWorldPosition(position)*/
+                        const position = cell.position
+                        const {x, y, z} = getDefaultPosition(sector)
+                        const positionToShiftDefault = new Vector3(x, y, z)
+
+                        /*if (position !== positionToShift) {*/
+                        if(sector.sectorState.animateMove?.animateObject.shift){
+                            if (position.distanceTo(positionToShiftDefault) >=1.5 ) {
+                                /*console.log(`i:${sector.sectorState.y}, j:${sector.sectorState.x}`)
+                                console.log(`X:${x}, Y:${y}`)   */
+                                /*cubes[i][j].cube.cell.translateOnAxis(positionToShift,0.05)*/
+                                cell.translateOnAxis(cell.worldToLocal(positionToShiftDefault), 0.2)
+                            } else if(position.distanceTo(positionToShiftDefault) < 1.5) {
+                                console.log(`position == positionToShift`)
+                                cell.position.set(x, y, z)
+                                dispatch(threeInLineAction.increaseAnimationCountEnd(
+                                    {
+                                        i: sector.sectorState.y,
+                                        j: sector.sectorState.x
+                                    }))
+                                sector.sectorState.animateMove = null
+                            }
+                        }else if (sector.sectorState.animateMove) {
+                            const animateMove = sector.sectorState.animateMove
+                            const X = animateMove.animateObject.shiftJ * sizeCell +x
+                            const Y = -animateMove.animateObject.shiftI * sizeCell +y
+
+                            const positionToUnShift = new Vector3(X, Y, 0)
+
+                            if (position.distanceTo(positionToUnShift) >=1.5 ) {
+                                /*console.log(`i:${sector.sectorState.y}, j:${sector.sectorState.x}`)
+                                console.log(`X:${x}, Y:${y}`)   */
+                                /*cubes[i][j].cube.cell.translateOnAxis(positionToShift,0.05)*/
+                                cell.translateOnAxis(cell.worldToLocal(positionToUnShift), 0.2)
+                            } else if(position.distanceTo(positionToUnShift) < 1.5) {
+                                /*console.log(`position == positionToShift`)*/
+                                cell.position.set(X, Y, 0)
+                                /*dispatch(threeInLineAction.increaseAnimationCountEnd(
+                                    {
+                                        i: sector.sectorState.y,
+                                        j: sector.sectorState.x
+                                    }))*/
+                                animateMove.animateObject.shift = true
+                            }
                         }
 
 
-                        const x = Map.current[i][j].sectorState.animateMove.animateObject.
-                        const addVector = new Vector3( 0, 1, 0 )
-                        cubes[i][j].cube.cell.position.add(addVector)*/
 
-                        dispatch(threeInLineAction.increaseAnimationCountEnd(
-                            {
-                                i: map[i][j].sectorState.y,
-                                j: map[i][j].sectorState.x
-                            }))
+
+
+
+
                     }
                 }
             }
@@ -174,12 +251,16 @@ const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
         // Render function
         const render = () => {
             timeout = requestAnimationFrame(render);
-            if (mapIsChanged.current) {
-                changeCubes(Map.current)
-                mapIsChanged.current=false
+            if(!mapIsChanged.current){
+                animateShift()
             }
 
-            cubes[2][2].cube.cell.rotation.x += 0.01
+            if (mapIsChanged.current) {
+                changeCubes(Map.current)
+                mapIsChanged.current = false
+            }
+
+           /* cubes[2][2].cube.cell.rotation.x += 0.01*/
             renderer.render(scene, camera2D);
             gl.endFrameEXP();
         };
@@ -195,14 +276,14 @@ const FreeJs2DDesk: FC<FreeJs2DDeskType> = ({map, deskState, layoutState}) => {
 
     useEffect(() => {
         if (map) {
-            Map.current=map
+           /* Map.current = map*/
             mapIsChanged.current = true
             console.log(`setMapIsChanged`)
         }
     }, [map]);
 
     return (
-        <View style={{height: height1, width: width1}}>
+        <View style={{height: heightGL, width: widthGL}}>
             <GLView style={{flex: 1}} onContextCreate={onContextCreate}>
             </GLView>
         </View>
