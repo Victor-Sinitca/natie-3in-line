@@ -53,7 +53,7 @@ export type deskStateType = {
 let initialState = {
     map: null as null | MapsGameType,
     deskState: {x: 10 as number, y: 7 as number, length: 50 as number},
-    gemsCount: 5 as number,
+    gemsCount: 8 as number,
     prevMap: null as null | MapsGameType,
     score: 0 as number,
     addScore: 0 as number,
